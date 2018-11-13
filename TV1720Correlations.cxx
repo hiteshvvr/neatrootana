@@ -7,34 +7,19 @@
 
 void TV1720Correlations::CreateHistograms() {
   // check if we already have histogramss.
-  char tname[100];
+/*  char tname[100];
   sprintf(tname, "V1720_Correlations_%i", 0);
 
   TH2D *tmp = (TH2D *)gDirectory->Get(tname);
   if (tmp) return;
+*/
 
   // Otherwise make histograms
   clear();
 
-  for (int i = 0; i < 8; i++) {  // loop over 8 channels
-
-    char name[100];
-    char title[100];
-    sprintf(name, "V1720_Correlations_%i", i);
-
-     sprintf(title, "V1720 Max ADC vs Max ADC time ch=%i", i);
-
-// //    TH2D *tmp = new TH2D(name, title, 1000, 0.6, 0.7, 1000, 0.65, 0.85);
-//     // TH2D *tmp = new TH2D(name, title, 1000, 0.95,1.2 , 1000,1 , 1.6);
-//     TH2D *tmp = new TH2D(name, title, 3000, 0.5,0.6, 3000,0.4, 0.6);
-// //    TH2D *tmp = new TH2D(name, title, 3000, 0,1, 3000,0, 1);
-//     // TH2D *tmp = new TH2D(name, title, 4,0,2000,5,0,1000);
-//     tmp->SetXTitle("max ADC time (ns)");
-//     tmp->SetYTitle("max bin value");
-
-//     push_back(tmp);
-//   }
-
+//  sprintf(name, "V1720_Correlations_%i", i);
+//  sprintf(title, "V1720 Max ADC vs Max ADC time ch=%i", i);
+    
     TH1D *a= new TH1D("QuadA", "QuadA", 1000, 00, 5000);
     a->SetXTitle("ADC Value");
     a->SetYTitle("Counts");
@@ -69,7 +54,6 @@ void TV1720Correlations::CreateHistograms() {
     focused->SetXTitle("X Coordinate");
     focused->SetYTitle("Y Coordinate");
     push_back(focused);
-  }
 }
 
 void TV1720Correlations::UpdateHistograms(TDataContainer &dataContainer) {
