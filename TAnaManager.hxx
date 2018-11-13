@@ -8,6 +8,7 @@
 //#define USE_L2249
 //#define USE_AGILENT
 #define USE_V1720
+#define USE_V1290
 #define USE_V1720_CORRELATIONS
 //#define USE_V1730DPP
 // #define USE_V1730RAW
@@ -19,6 +20,7 @@
 // #include "TAgilentHistogram.h"
 #include "TV1720Waveform.h"
 #include "TV1720Correlations.h"
+#include "TV1290Histogram.h"
 // #include "TV1730DppWaveform.h"
 // #include "TV1730RawWaveform.h"
 // #include "TDT724Waveform.h"
