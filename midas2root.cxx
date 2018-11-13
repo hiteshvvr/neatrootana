@@ -42,7 +42,7 @@ public:
 
 
     // Getting raw data if required Generates large files
-    int getrawdata = 0;
+    int getrawdata = 1;
     std::ofstream outfile;
 
 #ifdef USE_V1720
@@ -192,7 +192,7 @@ public:
                             maxadc = adc;
                             maxtime = j * 4;
                         }
-                        if (getrawdata == 1)
+                        if (getrawdata == 57)
                             outfile << timetag + i * 4 << "    " << adc << "\n";
                     }
 
@@ -239,6 +239,11 @@ public:
             hsum->Fill(sum);
             complete->Fill(chx,chy);
             focused->Fill(chx,chy);
+            
+            if (getrawdata == 1)
+                outfile <<midasid<< "\t"<<timetag<<"\t"<<maxch[0]<<"\t";
+                outfile <<maxch[1]<<"\t"<<maxch[2]<<"\t"<<maxch[3]<<"\t";
+                outfile <<chx<<"\t"<<chy<<"\t"<<"\n";
 
             fTree->Fill();
         }
