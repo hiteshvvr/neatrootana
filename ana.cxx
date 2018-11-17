@@ -13,9 +13,6 @@
 
 class Analyzer: public TRootanaEventLoop {
 
-
-
-
 public:
 
   // An analysis manager.  Define and fill histograms in 

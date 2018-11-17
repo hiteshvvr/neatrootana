@@ -9,6 +9,8 @@
 #include "TComplicatedExampleCanvas.hxx"
 #include "TInterestingEventManager.hxx"
 
+#include "TV1290Data.hxx"
+
 
 #include "TAnaManager.hxx"
 
@@ -22,7 +24,7 @@ public:
   TAnaManager *anaManager;
 
   MyTestLoop() {
-    SetOutputFilename("example_output");
+    SetOutputFilename("NeatAna Display");
     DisableRootOutput(false);
     anaManager = new TAnaManager();
     // Number of events to skip before plotting one.
@@ -40,8 +42,8 @@ public:
     // if(anaManager->HaveV792Histograms()) 
     //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV792Histograms(),"V792"));
     
-    // if(anaManager->HaveV1190Histograms()) 
-    //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1190Histograms(),"V1190"));
+    if(anaManager->HaveV1290Histograms()) 
+       AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1290Histograms(),"V1290 TDC"));
     
     // if(anaManager->HaveL2249Histograms()) 
     //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetL2249Histograms(),"L2249"));
@@ -67,7 +69,7 @@ public:
     // if(anaManager->HaveDT724Histograms()) 
     //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetDT724Histograms(),"DT724 Waveforms"));
     
-    SetDisplayName("Example Display");
+    SetDisplayName("NeatAna Display");
   };
 
   virtual ~MyTestLoop() {};
