@@ -8,8 +8,8 @@
 //#define USE_L2249
 //#define USE_AGILENT
 #define USE_V1720
-#define USE_V1290
 #define USE_V1720_CORRELATIONS
+#define USE_V1290
 //#define USE_V1730DPP
 // #define USE_V1730RAW
 // #define USE_DT724
@@ -45,6 +45,7 @@ public:
 	bool HaveV1720Histograms();
   	bool HaveV1720Correlations();
     bool HaveV1720Ch1();
+       bool HaveV1290Histograms();
 	// bool HaveV1730DPPistograms();
 	// bool HaveV1730Rawistograms();
 	// bool HaveDT724Histograms();
@@ -54,6 +55,7 @@ public:
 	// TV1190Histograms* GetV1190Histograms();
 	// TL2249Histograms* GetL2249Histograms();
 	// TAgilentHistograms* GetAgilentistograms();
+           TV1290Histograms* GetV1290Histograms();
 	TV1720Waveform* GetV1720Histograms();
   	TV1720Correlations* GetV1720Correlations();
     // TV1720Ch1* GetV1720Ch1();
@@ -68,6 +70,7 @@ private:
 	// TV1190Histograms *fV1190Histogram;
 	// TL2249Histograms *fL2249Histogram;
 	// TAgilentHistograms *fAgilentHistogram;
+       TV1290Histograms *fV1290Histogram;
 	TV1720Waveform *fV1720Waveform;
   	TV1720Correlations *fV1720Correlations;
     // TV1720Ch1 *fV1720Ch1;
