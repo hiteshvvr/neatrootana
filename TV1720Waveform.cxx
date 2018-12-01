@@ -22,7 +22,7 @@ void TV1720Waveform::CreateHistograms(){
   TH1D *tmp = (TH1D*)gDirectory->Get(tname);
   if (tmp) return;
 
-	int fWFLength = 4000; // Need a better way of detecting this...
+	int fWFLength = 8000; // Need a better way of detecting this...
   int numSamples = fWFLength / nanosecsPerSample;
 
   // Otherwise make histograms
