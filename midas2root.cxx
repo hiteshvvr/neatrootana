@@ -47,7 +47,7 @@ public:
 
 #ifdef USE_V1720
     // CAEN V1720 tree variables
-    int midasid;
+/*    int midasid;
     uint32_t timetag;
     int chan_no;
     int maxadcvalue;
@@ -56,19 +56,22 @@ public:
     std::vector<float> ptime;
     double chx;
     double chy;
-
-/*    struct psdEvent {
+*/
+    struct psdEvent {
         int midasid;
         uint32_t timetag;
-        int chan_no;
-        int maxadc;
-        int base;
-        std::vector<float> pulse;
-        std::vector<float> ptime;
-        double x;
-        double y;
+        int maxadc[5];
+        int maxtimetag[5];
+        float base[5];
+        int ch0data[4096];
+        int ch1data[4096];
+        int ch2data[4096];
+        int ch3data[4096];
+        int ch4data[4096];
+        double posx;
+        double posy;
     } psevent;
-*/
+
 
 // Define the Histograms
     TH1D *a =  new TH1D("QuadA", "QuadA", 1000, 00, 5000);
@@ -98,16 +101,19 @@ public:
             outfile.open(csvfile);
         }
 
-
 #ifdef USE_V1720
-        fTree->Branch("midasid", &midasid, "midasid/I");
-        fTree->Branch("timetag", &timetag, "timetag/i");
-        fTree->Branch("chan_no", &chan_no, "chan_no/I");
-        fTree->Branch("maxadcvalue", &maxadcvalue, "maxadcvalue/I");
-        fTree->Branch("maxtimetag", &maxtimetag, "maxtimetag/i");
-        fTree->Branch("pulse", &pulse);
-        fTree->Branch("XhitPosition", &chx);
-        fTree->Branch("YhitPosition", &chy);
+        fTree->Branch("midasid", &psevent.midasid, "midasid/I");
+        fTree->Branch("timetag", &psevent.timetag, "timetag/i");
+        fTree->Branch("maxadcvalue", psevent.maxadc, "maxadc[5]/I");
+        fTree->Branch("maxtimetag", psevent.maxtimetag, "maxtimetag[5]/i");
+        fTree->Branch("base", psevent.base, "base[5]/F");
+        fTree->Branch("ch0data", psevent.ch0data,"ch0data[4096]/I");
+        fTree->Branch("ch1data", psevent.ch1data,"ch1data[4096]/I");
+        fTree->Branch("ch2data", psevent.ch2data,"ch2data[4096]/I");
+        fTree->Branch("ch3data", psevent.ch3data,"ch3data[4096]/I");
+        fTree->Branch("ch4data", psevent.ch4data,"ch4data[4096]/I");
+        fTree->Branch("XhitPosition", &psevent.posx,"posx/F");
+        fTree->Branch("YhitPosition", &psevent.posy,"posy/F");
 #endif
     }
 
@@ -141,7 +147,7 @@ public:
     complete->Write("PSD hit focused histogram");
     
     
-    gr->Write("Single Sample Pulse");
+//    gr->Write("Single Sample Pulse");
 
 
 
@@ -154,7 +160,7 @@ public:
     // Lecroy data packets.
     bool ProcessMidasEvent(TDataContainer &dataContainer)
     {
-        midasid = dataContainer.GetMidasEvent().GetSerialNumber();
+        psevent.midasid = dataContainer.GetMidasEvent().GetSerialNumber();
         // if (midasid % 10 == 0) printf(".");
         // int i,k;
         int i, numsamples, j;
@@ -164,7 +170,7 @@ public:
 
         if (v1720 && !v1720->IsZLECompressed())
         {
-            timetag = v1720->GetTriggerTag();
+            psevent.timetag = v1720->GetTriggerTag();
             int channelmask = v1720->GetChannelMask();
             double maxch[4];
 
@@ -173,28 +179,32 @@ public:
             {
                 if (chmaskbit[i] == 1)
                 {
-                    chan_no = i;
+                    int chan_no = i;
                     TV1720RawChannel channelData = v1720->GetChannelData(i);
                     numsamples = channelData.GetNSamples();
                     if(numsamples <=  0) {maxch[i] = 0; continue;}
+                    if(numsamples >=  4096) {maxch[i] = 0; printf("There is problem\n"); continue;}
                     int maxadc = 0;
                     int maxtime = -1;
-                    pulse.clear();
-                    ptime.clear();
+                    double adc[4096];
                     for (j = 0; j < numsamples; j++)
                     {
-                        double adc;
-                        adc = channelData.GetADCSample(j);
-                        pulse.emplace_back(adc);
-                        ptime.emplace_back(j * 4);
-                        if (adc > maxadc)
+                        adc[j] = channelData.GetADCSample(j);
+
+                        if (adc[j] > maxadc)
                         {
-                            maxadc = adc;
+                            maxadc = adc[j];
                             maxtime = j * 4;
                         }
                         if (getrawdata == 57)
-                            outfile << timetag + i * 4 << "    " << adc << "\n";
+                            outfile << psevent.timetag + i * 4 << "    " << adc << "\n";
                     }
+
+                        if(i == 0)for(j=0;j<numsamples;j++)psevent.ch0data[j]=adc[j];
+                        if(i == 1)for(j=0;j<numsamples;j++)psevent.ch1data[j]=adc[j];
+                        if(i == 2)for(j=0;j<numsamples;j++)psevent.ch2data[j]=adc[j];
+                        if(i == 3)for(j=0;j<numsamples;j++)psevent.ch3data[j]=adc[j];
+                        if(i == 4)for(j=0;j<numsamples;j++)psevent.ch4data[j]=adc[j];
 
                     // getting the baseline
                     double base = 0;
@@ -204,11 +214,10 @@ public:
 
                     base =  base/baselinesamples;
 
-                    maxadcvalue = maxadc;
-                    maxtimetag = maxtime;
-                    // std::cout << timetag << '\n';
-                    // maxtimetag = timetag + max_time;
-                    //
+                    psevent.maxadc[i] =  maxadc;
+                    psevent.maxtimetag[i] = maxtime;
+                    psevent.base[i] = base;
+                    
                     maxch[i] = maxadc - base;
 
                     // Fill Max Histograms
@@ -219,13 +228,13 @@ public:
 
 
                     int plotevent = 100;
-                    if (midasid == plotevent)
+                    if (psevent.midasid == plotevent)
                     {
                         TH1D *h  = new TH1D("h", "Normal histogram", numsamples, 0, numsamples - 1);
                         for (j = 0; j < numsamples; j++) h->SetBinContent (j, channelData.GetADCSample(j));
                         h->Write("Single Sample Pulse");
 
-                        gr = new TGraph(numsamples, &ptime[0], &pulse[0]);
+                   //     gr = new TGraph(numsamples, &ptime[0], &pulse[0]);
                     }
                     // std::cout << pulse.size() << '\n';
                 }
@@ -233,17 +242,17 @@ public:
 
             double sum = maxch[0] + maxch[1] + maxch[2] + maxch[3];
 
-            chx = (maxch[0] + maxch[1])/sum;
-            chy = (maxch[1] + maxch[2])/sum;
+            psevent.posx = (maxch[0] + maxch[1])/sum;
+            psevent.posy = (maxch[1] + maxch[2])/sum;
 
             hsum->Fill(sum);
-            complete->Fill(chx,chy);
-            focused->Fill(chx,chy);
+            complete->Fill(psevent.posx, psevent.posy);
+            focused->Fill(psevent.posx, psevent.posy);
             
             if (getrawdata == 1)
-                outfile <<midasid<< "\t"<<timetag<<"\t"<<maxch[0]<<"\t";
+                outfile <<psevent.midasid<< "\t"<<psevent.timetag<<"\t"<<maxch[0]<<"\t";
                 outfile <<maxch[1]<<"\t"<<maxch[2]<<"\t"<<maxch[3]<<"\t";
-                outfile <<chx<<"\t"<<chy<<"\t"<<"\n";
+                outfile <<psevent.posx<<"\t"<<psevent.posy<<"\t"<<"\n";
 
             fTree->Fill();
         }
