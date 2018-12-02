@@ -565,7 +565,7 @@ public:
     };
 
     // complicated method to set correct filename when dealing with subruns.
-    std::string setfulloutputfilename(int run, std::string midasfilename) {
+    std::string SetFullOutputFileName(int run, std::string midasfilename) {
         char buff[128];
         Int_t in_num = 0, part = 0;
         Int_t num[2] = {0, 0};  // run and subrun values
