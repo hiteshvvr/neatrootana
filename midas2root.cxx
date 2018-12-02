@@ -33,6 +33,11 @@
 #include "TV1290Data.hxx"
 #endif
 
+#ifdef USE_NEATEVT
+#include "TV1720RawData.h"
+#include "TV1290Data.hxx"
+#endif
+
 
 class Analyzer : public TRootanaEventLoop
 {
@@ -43,6 +48,56 @@ public:
 
     int getrawdata = 1;
     std::ofstream outfile;
+
+#ifdef USE_NEATEVT
+    // The tree to fill.
+    TTree *neatdataTree;
+    TGraph *gr1720, *gr1290;
+    TH1D *h1290;
+    float RES_1290N = 0.0245;
+
+    struct neateventdata{
+        int tdc_midasid;
+        int tdc_eventid;
+        int tdc_num_of_hits;
+        unsigned int tdc_timestampdata[5];
+        int tdc_channodata[5];
+        unsigned int tdc_chan0Data;
+        unsigned int tdc_chan1Data;
+        float tdc_tdiff;
+        int digi_midasid;
+        int digi_eventid;
+        uint32_t digi_timetag;
+        float digi_ch0dat[4096];
+        float digi_ch1dat[4096];
+        float digi_ch2dat[4096];
+        float digi_ch3dat[4096];
+        float digi_ch4dat[4096];
+        int digi_maxadcvalue[5];
+        uint32_t digi_maxtimetag[5];
+        double posx;
+        double posy;
+    } neatevent;
+/*
+// Define the Histograms
+    TH1D *a =  new TH1D("QuadA", "QuadA", 1000, 00, 5000);
+    TH1D *b =  new TH1D("QuadB", "QuadB", 1000, 00, 5000);
+    TH1D *c =  new TH1D("QuadC", "QuadC", 1000, 00, 5000);
+    TH1D *d =  new TH1D("QuadD", "QuadD", 1000, 00, 5000);
+    TH1D *hsum =  new TH1D("Sum of Channels", "hsum", 4000, 00, 12000);
+    TH2D *complete = new TH2D("complete", "complete", 200, 0, 1, 200, 0, 1);
+    TH2D *focused = new TH2D("focused", "focused", 200, 0.1, 0.6, 200, 0.4, 0.6);
+    TH1D *alltdiff = new TH1D("TotalSpectrum", "TotalSpectrum", 10000, -5000, 5000);
+    TH1D *shits = new TH1D("singleHit", "singleHit", 10000, 0, 5000);
+    TH1D *mhits = new TH1D("multiHit", "multiHit", 5000, -5000, 5000);
+    TH1D *triples2ion = new TH1D("triples2ion", "Triple With Two Ions", 5000, -7000, 7000);
+    TH1D *triples2electrs = new TH1D("triples2electrs", "Triples With Two Electrons", 5000, -7000, 7000);
+    TH1I *nuofhits = new TH1I("NuOfHits", "NumberOfHits", 300, -1, 100);
+    TH1I *hitcounts = new TH1I("NuOfHits", "HitDistribution", 50 , -1, 20);
+    TH1F *tripdis = new TH1F("TripleDis", "Triple distributed 0-eee, 1-eei, 2-eie, 3-eii, 4-iee, 5-iei, 6-iie, 7-iii", 1000, -5, 10);
+
+    */
+#endif
 
 #ifdef USE_V1720
     // The tree to fill.
@@ -158,6 +213,36 @@ public:
         f1290Tree->Branch("Channel1Data", &event.chan1Data, "chan1Data/I");
 #endif
 
+#ifdef USE_NEATEVT
+        neatdataTree = new TTree("NeatData", "Neat DAta Tree");
+        neatsimpleTree = new TTree("NeatSimpleData", "Neat Simple Data Tree");
+
+        neatdataTree->Branch("tdc_midasid", &neatevent.tdc_midasid, "tdc_midasid/I");
+        neatdataTree->Branch("tdc_eventid", &neatevent.tdc_eventid, "tdc_eventid/I");
+        neatdataTree->Branch("tdc_nu_of_hits", &neatevent.tdc_num_of_hits, "tdc_num_of_hits/I");
+        neatdataTree->Branch("tdc_timestampdata", neatevent.tdc_timestampdata, "tdc_timestampdata[num_of_hits]/I");
+        neatdataTree->Branch("tdc_ChannelNumData", neatevent.tdc_channodata, "tdc_channodata[num_of_hits]/I");
+        neatdataTree->Branch("tdc_Channel0Data", &neatevent.tdc_chan0Data, "tdc_chan0Data/I");
+        neatdataTree->Branch("tdc_Channel1Data", &neatevent.tdc_chan1Data, "tdc_chan1Data/I");
+        neatdataTree->Branch("tdc_tdiff", &neatevent.tdc_tdiff, "tdc_chan1Data/F");
+        neatdataTree->Branch("digi_midasid", &neatevent.digi_midasid, "digi_midasid/I");
+        neatdataTree->Branch("digi_eventid", &neatevent.digi_eventid, "digi_eventid/I");
+        neatdataTree->Branch("digi_timetag", &neatevent.digi_timetag, "digi_timetag/I");
+        neatdataTree->Branch("digi_ch0dat", neatevent.digi_ch0dat, "digi_ch0dat/I");
+        neatdataTree->Branch("digi_ch1dat", neatevent.digi_ch1dat, "digi_ch1dat/I");
+        neatdataTree->Branch("digi_ch2dat", neatevent.digi_ch2dat, "digi_ch2dat/I");
+        neatdataTree->Branch("digi_ch3dat", neatevent.digi_ch3dat, "digi_ch3dat/I");
+        neatdataTree->Branch("digi_ch4dat", neatevent.digi_ch4dat, "digi_ch4dat/I");
+        neatdataTree->Branch("digi_maxadcvalue", neatevent.digi_maxadcvalue, "digi_maxadcvalue/I");
+        neatdataTree->Branch("digi_maxtimetag", neatevent.digi_maxtimetag, "digi_maxtimetag/I");
+        neatdataTree->Branch("XhitPosition", &neatevent.posx, "digi_Xposition/F");
+        neatdataTree->Branch("YhitPosition", &neatevent.posy, "digi_Yposition/F");
+        
+        neatsimpleTree->Branch("tdc_tdiff", &neatevent.tdc_tdiff, "tdc_chan1Data/F");
+        neatsimpleTree->Branch("XhitPosition", &neatevent.posx, "digi_Xposition/F");
+        neatsimpleTree->Branch("YhitPosition", &neatevent.posy, "digi_Yposition/F");
+#endif
+
     }
 
     void endrun(int transition, int run, int time) {
@@ -195,6 +280,48 @@ public:
 #endif
 
 #ifdef use_v1290
+        shits->write("singlehits");
+        mhits->write("multiplehits");
+        alltdiff->write("completespectrum");
+        nuofhits->write("numberofhits");
+        hitcounts->write("hitdistribution");
+        triples2ion->write("triples with two ions");
+        triples2electrs->write("triples with two electrons");
+        tripdis->write("triples distribution");
+#endif
+
+#ifdef USE_NEATEVT
+        a->setxtitle("adc value");
+        a->setytitle("counts");
+        a->write("quadrand a histogram");
+
+        b->setxtitle("adc value");
+        b->setytitle("counts");
+        b->write("quadrand b histogram");
+        
+        c->setxtitle("adc value");
+        c->setytitle("counts");
+        c->write("quadrand c histogram");
+       
+        d->setxtitle("adc value");
+        d->setytitle("counts");
+        d->write("quadrand d histogram");
+
+        hsum->setxtitle("adc value");
+        hsum->setytitle("counts");
+        hsum->write("sum of all quadrand histogram");
+
+        complete->setxtitle("x coordinate");
+        complete->setytitle("y coordinate");
+        complete->write("psd hit postition histogram");
+
+        focused->setxtitle("x coordinate");
+        focused->setytitle("y coordinate");
+        complete->write("psd hit focused histogram");
+
+
+        gr->write("single sample pulse");
+        
         shits->write("singlehits");
         mhits->write("multiplehits");
         alltdiff->write("completespectrum");
@@ -463,7 +590,7 @@ public:
                           << ") disagrees with midas run (" << run << ")" << std::endl;
                 exit(1);
             }
-            sprintf(buff, "output_%.6d_%.4d.root", run, num[1]);
+            sprintf(buff, "outfiles/soutput_%.6d_%.4d.root", run, num[1]);
             printf("using filename %s\n", buff);
         } else {
             sprintf(buff, "outfiles/run_root%.5d.root", run);
@@ -477,28 +604,3 @@ int main(int argc, char *argv[]) {
     return Analyzer::Get().ExecuteLoop(argc, argv);
 }
 
-
-
-// tgenericdata *v1720a = datacontainer.geteventdata<tgenericdata>("dg01");
-// if(v1720){
-
-// const uint32_t *fdata = v1720a->getdata32();
-// int fglobalheader1 = v1720a->getdata32()[1];
-// int fglobalheader2 = v1720->getdata32()[2];
-// int fglobalheader3 = v1720->getdata32()[3];
-
-// printf("%ld %ld %ld %ld \n",fdata[0],fdata[1],fdata[2],fdata[3]);
-
-//  // printf("data exists\n");
-//  const uint32_t *a = v1720->getdata32();
-
-//  if(id==35){
-//  printf("%d\n",v1720->getsize());
-//  k=a[1] & 0xff;
-//  printf("%d\n", k );
-//  // for(i=0;i<55;i++)
-//  // printf ("a[%i]:%d\n", i, *(a++));
-//  int n32samples = (v1720->geteventsize() - 4)/ 1;
-
-//  }
-// }
