@@ -183,6 +183,8 @@ public:
 
         // Create a TTree
 #ifdef USE_V1720
+        f1720Tree = new TTree("v1720Data", "v1720 Data");
+
         f1720Tree->Branch("midasid", &psevent.midasid, "midasid/I");
         f1720Tree->Branch("timetag", &psevent.timetag, "timetag/i");
         f1720Tree->Branch("maxadcvalue", psevent.maxadc, "maxadc[5]/I");
@@ -273,7 +275,7 @@ public:
     complete->Write("PSD hit focused histogram");
 
 
-    gr1720->Write("Single Sample Pulse");
+//    gr1720->Write("Single Sample Pulse");
 
 #endif
 
@@ -297,12 +299,12 @@ public:
     // lecroy data packets.
     bool ProcessMidasEvent(TDataContainer &dataContainer)
     {
-        midasid = dataContainer.GetMidasEvent().GetSerialNumber();
+        psevent.midasid = dataContainer.GetMidasEvent().GetSerialNumber();
         // if (midasid % 10 == 0) printf(".");
         // int i,k;
         int i, numsamples, j;
         if(getrawdata == 1)
-            outfile << "!!!" << "\n" << midasid << "\n";
+            outfile << "!!!" << "\n" << psevent.midasid << "\n";
 
 #ifdef USE_V1720
         TV1720RawData *v1720 = dataContainer.GetEventData<TV1720RawData>("DG01");
