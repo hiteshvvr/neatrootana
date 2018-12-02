@@ -245,91 +245,50 @@ public:
 
     }
 
-    void endrun(int transition, int run, int time) {
+    void EndRun(int transition, int run, int time) {
 
-#ifdef use_v1720
-        a->setxtitle("adc value");
-        a->setytitle("counts");
-        a->write("quadrand a histogram");
+#ifdef USE_V1720
+    a->SetXTitle("ADC Value");
+    a->SetYTitle("Counts");
+    a->Write("Quadrand A histogram");
 
-        b->setxtitle("adc value");
-        b->setytitle("counts");
-        b->write("quadrand b histogram");
+    b->SetXTitle("ADC Value");
+    b->SetYTitle("Counts");
+    b->Write("Quadrand B histogram");
 
-        c->setxtitle("adc value");
-        c->setytitle("counts");
-        c->write("quadrand c histogram");
-        d->setxtitle("adc value");
-        d->setytitle("counts");
-        d->write("quadrand d histogram");
+    c->SetXTitle("ADC Value");
+    c->SetYTitle("Counts");
+    c->Write("Quadrand C histogram");
+    d->SetXTitle("ADC Value");
+    d->SetYTitle("Counts");
+    d->Write("Quadrand D histogram");
 
-        hsum->setxtitle("adc value");
-        hsum->setytitle("counts");
-        hsum->write("sum of all quadrand histogram");
+    hsum->SetXTitle("ADC Value");
+    hsum->SetYTitle("Counts");
+    hsum->Write("Sum of all Quadrand histogram");
 
-        complete->setxtitle("x coordinate");
-        complete->setytitle("y coordinate");
-        complete->write("psd hit postition histogram");
+    complete->SetXTitle("X Coordinate");
+    complete->SetYTitle("Y Coordinate");
+    complete->Write("PSD hit postition histogram");
 
-        focused->setxtitle("x coordinate");
-        focused->setytitle("y coordinate");
-        complete->write("psd hit focused histogram");
+    focused->SetXTitle("X Coordinate");
+    focused->SetYTitle("Y Coordinate");
+    complete->Write("PSD hit focused histogram");
+    
+    
+    gr1720->Write("Single Sample Pulse");
 
-
-        gr->write("single sample pulse");
 #endif
 
-#ifdef use_v1290
-        shits->write("singlehits");
-        mhits->write("multiplehits");
-        alltdiff->write("completespectrum");
-        nuofhits->write("numberofhits");
-        hitcounts->write("hitdistribution");
-        triples2ion->write("triples with two ions");
-        triples2electrs->write("triples with two electrons");
-        tripdis->write("triples distribution");
-#endif
-
-#ifdef USE_NEATEVT
-        a->setxtitle("adc value");
-        a->setytitle("counts");
-        a->write("quadrand a histogram");
-
-        b->setxtitle("adc value");
-        b->setytitle("counts");
-        b->write("quadrand b histogram");
-        
-        c->setxtitle("adc value");
-        c->setytitle("counts");
-        c->write("quadrand c histogram");
-       
-        d->setxtitle("adc value");
-        d->setytitle("counts");
-        d->write("quadrand d histogram");
-
-        hsum->setxtitle("adc value");
-        hsum->setytitle("counts");
-        hsum->write("sum of all quadrand histogram");
-
-        complete->setxtitle("x coordinate");
-        complete->setytitle("y coordinate");
-        complete->write("psd hit postition histogram");
-
-        focused->setxtitle("x coordinate");
-        focused->setytitle("y coordinate");
-        complete->write("psd hit focused histogram");
-
-
-        gr->write("single sample pulse");
-        
-        shits->write("singlehits");
-        mhits->write("multiplehits");
-        alltdiff->write("completespectrum");
-        nuofhits->write("numberofhits");
-        hitcounts->write("hitdistribution");
-        triples2ion->write("triples with two ions");
-        triples2electrs->write("triples with two electrons");
-        tripdis->write("triples distribution");
+#ifdef USE_V1290
+        shits->Write("singlehits");
+        mhits->Write("multiplehits");
+        alltdiff->Write("completespectrum");
+        nuofhits->Write("numberofhits");
+        hitcounts->Write("hitdistribution");
+        triples2ion->Write("triples with two ions");
+        triples2electrs->Write("triples with two electrons");
+        tripdis->Write("triples distribution");
 #endif
 
         if (getrawdata == 1)
