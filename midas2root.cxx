@@ -294,27 +294,3 @@ int main(int argc, char *argv[]) {
 }
 
 
-
-// TGenericData *v1720a = dataContainer.GetEventData<TGenericData>("DG01");
-// if(v1720){
-
-// const uint32_t *fData = v1720a->GetData32();
-// int fGlobalHeader1 = v1720a->GetData32()[1];
-// int fGlobalHeader2 = v1720->GetData32()[2];
-// int fGlobalHeader3 = v1720->GetData32()[3];
-
-// printf("%ld %ld %ld %ld \n",fData[0],fData[1],fData[2],fData[3]);
-
-//  // printf("Data Exists\n");
-//  const uint32_t *a = v1720->GetData32();
-
-//  if(id==35){
-//  printf("%d\n",v1720->GetSize());
-//  k=a[1] & 0xFF;
-//  printf("%d\n", k );
-//  // for(i=0;i<55;i++)
-//  // printf ("a[%i]:%d\n", i, *(a++));
-//  int N32samples = (v1720->GetEventSize() - 4)/ 1;
-
-//  }
-// }
