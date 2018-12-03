@@ -270,10 +270,6 @@ public:
     complete->SetYTitle("Y Coordinate");
     complete->Write("PSD hit postition histogram");
 
-    focused->SetXTitle("X Coordinate");
-    focused->SetYTitle("Y Coordinate");
-    complete->Write("PSD hit focused histogram");
-
 
 //    gr1720->Write("Single Sample Pulse");
 
@@ -305,8 +301,8 @@ public:
         int i, numsamples, j;
         if(getrawdata == 1)
             outfile << "!!!" << "\n" << psevent.midasid << "\n";
-        
-        
+
+
 
 
 #ifdef USE_V1720
@@ -320,7 +316,7 @@ public:
         int outofwindoweventflag = 1;
         int numsam = channelDatasum.GetNSamples();
         int windowmin = 500 , windowmax = 1500;
-       
+
         if (v1720 && !v1720->IsZLECompressed()) {
             for (k = 0; k < numsam ; k++) {
                 sadc = channelDatasum.GetADCSample(k);
@@ -330,24 +326,24 @@ public:
                     smaxpos = k;
                 }
             }
-    
+
             if(windowmin < smaxpos && smaxpos < windowmax)
                 {
                     outofwindoweventflag = 0;
                     double smaxfac = smaxadc/2.5;
-                    for (k = windowmin; k < smaxpos-70; k++) 
+                    for (k = windowmin; k < smaxpos-70; k++)
                         {
                             sadc = channelDatasum.GetADCSample(k);
                             if (sadc > smaxfac ) doubleeventflag = 1;
                         }
-                
-                    for (k = smaxpos+70; k < windowmax; k++) 
+
+                    for (k = smaxpos+70; k < windowmax; k++)
                         {
                             sadc = channelDatasum.GetADCSample(k);
                             if (sadc > smaxfac ) doubleeventflag = 1;
                         }
                 }
-    
+
             if (doubleeventflag || outofwindoweventflag) return;
 //          printf("doubleeventflag= %d\n",doubleeventflag);
             psevent.timetag = v1720->GetTriggerTag();
@@ -367,7 +363,7 @@ public:
                     double maxadc = 0;
                     int maxtime = -1;
                     int maxadcpos = 0;
-                    double adc[4096];
+                    double adc;
 
 
                     /* FIND MAX */
@@ -401,7 +397,7 @@ public:
                         base = base/(numsam-maxadcpos-450);
                         maxch[i] = maxadc-base;
                     }
-                    
+
                     if(smaxpos >= 4000)
                     {
                         for (int j = 0; j < maxadcpos-250; j++)
@@ -411,16 +407,7 @@ public:
                        base=base/(maxadcpos-250);
                        maxch[i] = maxadc-base;
                     }
-
-
                     }
-
-
-                    int baselinesamples = 350;      // Number of samples for creating the baseline
-                    for(int j = 0 ; j<baselinesamples; j++)
-                        base = base + channelData.GetADCSample(j);
-
-                    base =  base/baselinesamples;
 
                     psevent.maxadc[i] =  maxadc;
                     psevent.maxtimetag[i] = maxtime;
