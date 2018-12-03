@@ -318,8 +318,8 @@ public:
         // if (midasid % 10 == 0) printf(".");
         // int i,k;
         int i, numsamples, j;
-        if(getrawdata == 1)
-            outfile << "!!!" << "\n" << psevent.midasid << "\n";
+//        if(getrawdata == 1)
+//            outfile << "!!!" << "\n" << psevent.midasid << "\n";
 
 #ifdef USE_V1720
 
@@ -520,7 +520,7 @@ public:
             hitcounts->Fill(numhit * 10 + stopchancount);
             nuofhits->Fill(numhit);
 
-
+            float temptdiff = 0;
             if (numhit == 2)
             {
                 double stopdata = 0;
@@ -536,9 +536,15 @@ public:
                 }
 
                 float tdiff = stopdata - startdata;
+                temptdiff = tdiff;
                 shits->Fill(tdiff);
                 alltdiff->Fill(tdiff);
             }
+
+            if (getrawdata == 1)
+                outfile <<  "\t" <<psevent.midasid<<"\t"<<temptdiff<<"\t"<<"\n";
+
+
 
             if (numhit == 3)
             {
