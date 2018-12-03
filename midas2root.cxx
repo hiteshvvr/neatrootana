@@ -305,12 +305,51 @@ public:
         int i, numsamples, j;
         if(getrawdata == 1)
             outfile << "!!!" << "\n" << psevent.midasid << "\n";
+        
+        
+
 
 #ifdef USE_V1720
-        TV1720RawData *v1720 = dataContainer.GetEventData<TV1720RawData>("DG01");
 
-        if (v1720 && !v1720->IsZLECompressed())
-        {
+        TV1720RawData *v1720 = dataContainer.GetEventData<TV1720RawData>("DG01");
+        TV1720RawChannel channelDatasum = v1720->GetChannelData(4);
+
+        double sadc, smaxadc = 0;
+        int k, smaxpos = 0;
+        int doubleeventflag = 0;
+        int outofwindoweventflag = 1;
+        int numsam = channelDatasum.GetNSamples();
+        int windowmin = 500 , windowmax = 1500;
+       
+        if (v1720 && !v1720->IsZLECompressed()) {
+            for (k = 0; k < numsam ; k++) {
+                sadc = channelDatasum.GetADCSample(k);
+                psevent.ch4data[k] =  sadc;
+                if (sadc > smaxadc) {
+                    smaxadc = sadc;
+                    smaxpos = k;
+                }
+            }
+    
+            if(windowmin < smaxpos && smaxpos < windowmax)
+                {
+                    outofwindoweventflag = 0;
+                    double smaxfac = smaxadc/2.5;
+                    for (k = windowmin; k < smaxpos-70; k++) 
+                        {
+                            sadc = channelDatasum.GetADCSample(k);
+                            if (sadc > smaxfac ) doubleeventflag = 1;
+                        }
+                
+                    for (k = smaxpos+70; k < windowmax; k++) 
+                        {
+                            sadc = channelDatasum.GetADCSample(k);
+                            if (sadc > smaxfac ) doubleeventflag = 1;
+                        }
+                }
+    
+            if (doubleeventflag || outofwindoweventflag) return;
+//          printf("doubleeventflag= %d\n",doubleeventflag);
             psevent.timetag = v1720->GetTriggerTag();
             int channelmask = v1720->GetChannelMask();
             double maxch[4];
@@ -325,30 +364,58 @@ public:
                     numsamples = channelData.GetNSamples();
                     if(numsamples <=  0) {maxch[i] = 0; continue;}
                     if(numsamples >=  4096) {maxch[i] = 0; printf("There is problem\n"); continue;}
-                    int maxadc = 0;
+                    double maxadc = 0;
                     int maxtime = -1;
+                    int maxadcpos = 0;
                     double adc[4096];
-                    for (j = 0; j < numsamples; j++)
-                    {
-                        adc[j] = channelData.GetADCSample(j);
 
-                        if (adc[j] > maxadc)
+
+                    /* FIND MAX */
+                    for (int j = smaxpos; j < smaxpos+500; j++)
+                    {
+                        double adc = channelData.GetADCSample(j);
+
+                        if (adc > maxadc)
                         {
-                            maxadc = adc[j];
-                            maxtime = j * 4;
+                            maxadc = adc;
+                            maxadcpos = j;
+                            maxtime  = j * 4;
                         }
                         if (getrawdata == 57)
                             outfile << psevent.timetag + i * 4 << "    " << adc << "\n";
                     }
 
-                        if(i == 0)for(j=0;j<numsamples;j++)psevent.ch0data[j]=adc[j];
-                        if(i == 1)for(j=0;j<numsamples;j++)psevent.ch1data[j]=adc[j];
-                        if(i == 2)for(j=0;j<numsamples;j++)psevent.ch2data[j]=adc[j];
-                        if(i == 3)for(j=0;j<numsamples;j++)psevent.ch3data[j]=adc[j];
-                        if(i == 4)for(j=0;j<numsamples;j++)psevent.ch4data[j]=adc[j];
+                        if(i == 0)for(j = 0;j<numsamples;j++)psevent.ch0data[j] = channelData.GetADCSample(j);
+                        if(i == 1)for(j = 0;j<numsamples;j++)psevent.ch1data[j] = channelData.GetADCSample(j);
+                        if(i == 2)for(j = 0;j<numsamples;j++)psevent.ch2data[j] = channelData.GetADCSample(j);
+                        if(i == 3)for(j = 0;j<numsamples;j++)psevent.ch3data[j] = channelData.GetADCSample(j);
 
                     // getting the baseline
                     double base = 0;
+                    if(smaxpos< 4000)
+                    {
+                        for (int j = maxadcpos+450; j < numsam ; j++)
+                        {
+                            base = base+channelData.GetADCSample(j);
+                        }
+                        base = base/(numsam-maxadcpos-450);
+                        maxch[i] = maxadc-base;
+                    }
+                    
+                    if(smaxpos >= 4000)
+                    {
+                        for (int j = 0; j < maxadcpos-250; j++)
+                        {
+                            base = base+channelData.GetADCSample(j);
+                        }
+                       base=base/(maxadcpos-250);
+                       maxch[i] = maxadc-base;
+                    }
+
+
+                    }
+
+
                     int baselinesamples = 350;      // Number of samples for creating the baseline
                     for(int j = 0 ; j<baselinesamples; j++)
                         base = base + channelData.GetADCSample(j);
