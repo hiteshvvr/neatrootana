@@ -232,8 +232,8 @@ public:
         neat->Branch("digi_ch2data", psevent.ch2data,"ch2data[4096]/I");
         neat->Branch("digi_ch3data", psevent.ch3data,"ch3data[4096]/I");
         neat->Branch("digi_ch4data", psevent.ch4data,"ch4data[4096]/I");
-        neat->Branch("digi_XhitPosition", &psevent.posx,"posx/F");
-        neat->Branch("digi_YhitPosition", &psevent.posy,"posy/F");
+        neat->Branch("xpos", &psevent.posx,"posx/F");
+        neat->Branch("ypos", &psevent.posy,"posy/F");
         neat->Branch("tdc_midasid", &event.midasid, "midasid/I");
         neat->Branch("tdc_eventid", &event.eventid, "eventid/I");
         neat->Branch("tdc_nu_of_hits", &event.num_of_hits, "num_of_hits/I");
