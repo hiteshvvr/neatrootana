@@ -121,8 +121,8 @@ public:
         int ch2data[4096] = {0};
         int ch3data[4096] = {0};
         int ch4data[4096] = {0};
-        double posx = 0;
-        double posy = 0;
+        float posx = 0;
+        float posy = 0;
     } psevent;
 
 // Define the Histograms
