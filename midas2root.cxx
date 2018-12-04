@@ -51,7 +51,7 @@ public:
 
 #ifdef USE_NEATEVT
     // The tree to fill.
-    TTree *neatdataTree;
+    TTree *neat;
     TGraph *gr1720, *gr1290;
     TH1D *h1290;
     float RES_1290N = 0.0245;
@@ -96,49 +96,33 @@ public:
         double posx;
         double posy;
     } neatevent;
-/*
-// Define the Histograms
-    TH1D *a =  new TH1D("QuadA", "QuadA", 1000, 00, 5000);
-    TH1D *b =  new TH1D("QuadB", "QuadB", 1000, 00, 5000);
-    TH1D *c =  new TH1D("QuadC", "QuadC", 1000, 00, 5000);
-    TH1D *d =  new TH1D("QuadD", "QuadD", 1000, 00, 5000);
-    TH1D *hsum =  new TH1D("Sum of Channels", "hsum", 4000, 00, 12000);
-    TH2D *complete = new TH2D("complete", "complete", 200, 0, 1, 200, 0, 1);
-    TH2D *focused = new TH2D("focused", "focused", 200, 0.1, 0.6, 200, 0.4, 0.6);
-    TH1D *alltdiff = new TH1D("TotalSpectrum", "TotalSpectrum", 10000, -5000, 5000);
-    TH1D *shits = new TH1D("singleHit", "singleHit", 10000, 0, 5000);
-    TH1D *mhits = new TH1D("multiHit", "multiHit", 5000, -5000, 5000);
-    TH1D *triples2ion = new TH1D("triples2ion", "Triple With Two Ions", 5000, -7000, 7000);
-    TH1D *triples2electrs = new TH1D("triples2electrs", "Triples With Two Electrons", 5000, -7000, 7000);
-    TH1I *nuofhits = new TH1I("NuOfHits", "NumberOfHits", 300, -1, 100);
-    TH1I *hitcounts = new TH1I("NuOfHits", "HitDistribution", 50 , -1, 20);
-    TH1F *tripdis = new TH1F("TripleDis", "Triple distributed 0-eee, 1-eei, 2-eie, 3-eii, 4-iee, 5-iei, 6-iie, 7-iii", 1000, -5, 10);
 
-    */
 #endif
 
 #ifdef USE_V1720
     // The tree to fill.
     TTree *f1720Tree;
     TGraph *gr1720;
+    TTree *neat;
 
     // Getting raw data if required Generates large files
 
     // CAEN V1720 tree variables
 
     struct psdEvent {
-        int midasid;
-        uint32_t timetag;
-        int maxadc[5];
-        int maxtimetag[5];
-        float base[5];
-        int ch0data[4096];
-        int ch1data[4096];
-        int ch2data[4096];
-        int ch3data[4096];
-        int ch4data[4096];
-        double posx;
-        double posy;
+        int midasid = 0;
+        int eventid = 0;
+        uint32_t timetag = 0;
+        int maxadc[5] = {0};
+        int maxtimetag[5] = {0};
+        float base[5] = {0};
+        int ch0data[4096] = {0};
+        int ch1data[4096] = {0};
+        int ch2data[4096] = {0};
+        int ch3data[4096] = {0};
+        int ch4data[4096] = {0};
+        double posx = 0;
+        double posy = 0;
     } psevent;
 
 // Define the Histograms
@@ -177,6 +161,7 @@ public:
         int channodata[5];
         unsigned int chan0Data;
         unsigned int chan1Data;
+        float tdiff;
     } event;
 
 //    std::vector<unsigned int> timestampdata;   // vector containing timestamp for each hit.
@@ -201,63 +186,63 @@ public:
 
         // Create a TTree
 #ifdef USE_V1720
-        f1720Tree = new TTree("v1720Data", "v1720 Data");
+        f1720Tree = new TTree("v1720Data", "v1720Data");
 
-        f1720Tree->Branch("midasid", &psevent.midasid, "midasid/I");
-        f1720Tree->Branch("timetag", &psevent.timetag, "timetag/i");
-        f1720Tree->Branch("maxadcvalue", psevent.maxadc, "maxadc[5]/I");
-        f1720Tree->Branch("maxtimetag", psevent.maxtimetag, "maxtimetag[5]/i");
-        f1720Tree->Branch("base", psevent.base, "base[5]/F");
-        f1720Tree->Branch("ch0data", psevent.ch0data,"ch0data[4096]/I");
-        f1720Tree->Branch("ch1data", psevent.ch1data,"ch1data[4096]/I");
-        f1720Tree->Branch("ch2data", psevent.ch2data,"ch2data[4096]/I");
-        f1720Tree->Branch("ch3data", psevent.ch3data,"ch3data[4096]/I");
-        f1720Tree->Branch("ch4data", psevent.ch4data,"ch4data[4096]/I");
-        f1720Tree->Branch("XhitPosition", &psevent.posx,"posx/F");
-        f1720Tree->Branch("YhitPosition", &psevent.posy,"posy/F");
+        f1720Tree->Branch("digi_midasid", &psevent.midasid, "midasid/I");
+        f1720Tree->Branch("digi_eventid", &psevent.eventid, "midasid/I");
+        f1720Tree->Branch("digi_timetag", &psevent.timetag, "timetag/i");
+        f1720Tree->Branch("digi_maxadcvalue", psevent.maxadc, "maxadc[5]/I");
+        f1720Tree->Branch("digi_maxtimetag", psevent.maxtimetag, "maxtimetag[5]/i");
+        f1720Tree->Branch("digi_base", psevent.base, "base[5]/F");
+        f1720Tree->Branch("digi_ch0data", psevent.ch0data,"ch0data[4096]/I");
+        f1720Tree->Branch("digi_ch1data", psevent.ch1data,"ch1data[4096]/I");
+        f1720Tree->Branch("digi_ch2data", psevent.ch2data,"ch2data[4096]/I");
+        f1720Tree->Branch("digi_ch3data", psevent.ch3data,"ch3data[4096]/I");
+        f1720Tree->Branch("digi_ch4data", psevent.ch4data,"ch4data[4096]/I");
+        f1720Tree->Branch("digi_XhitPosition", &psevent.posx,"posx/F");
+        f1720Tree->Branch("digi_YhitPosition", &psevent.posy,"posy/F");
 #endif
 
 #ifdef USE_V1290
 
         f1290Tree = new TTree("v1290Data", "v1290Data");
 
-        f1290Tree->Branch("midasid", &event.midasid, "midasid/I");
-        f1290Tree->Branch("eventid", &event.eventid, "eventid/I");
-        f1290Tree->Branch("nu_of_hits", &event.num_of_hits, "num_of_hits/I");
-        f1290Tree->Branch("timestampdata", event.timestampdata, "timestampdata[num_of_hits]/I");
-        f1290Tree->Branch("ChannelNumData", event.channodata, "channodata[num_of_hits]/I");
-        f1290Tree->Branch("Channel0Data", &event.chan0Data, "chan0Data/I");
-        f1290Tree->Branch("Channel1Data", &event.chan1Data, "chan1Data/I");
-#endif
+        f1290Tree->Branch("tdc_midasid", &event.midasid, "midasid/I");
+        f1290Tree->Branch("tdc_eventid", &event.eventid, "eventid/I");
+        f1290Tree->Branch("tdc_nu_of_hits", &event.num_of_hits, "num_of_hits/I");
+        f1290Tree->Branch("tdc_timestampdata", event.timestampdata, "timestampdata[num_of_hits]/I");
+        f1290Tree->Branch("tdc_ChannelNumData", event.channodata, "channodata[num_of_hits]/I");
+        f1290Tree->Branch("tdc_Channel0Data", &event.chan0Data, "chan0Data/I");
+        f1290Tree->Branch("tdc_Channel1Data", &event.chan1Data, "chan1Data/I");
+        f1290Tree->Branch("tdc_tdiff", &event.tdiff, "tdc_chan1Data/F");
+//#endif
 
-#ifdef USE_NEATEVT
-        neatdataTree = new TTree("NeatData", "Neat DAta Tree");
-        neatsimpleTree = new TTree("NeatSimpleData", "Neat Simple Data Tree");
+//#ifdef USE_NEATEVT
+        neat = new TTree("NeatData", "Neat DAta Tree");
+ //       neatsimpleTree = new TTree("NeatSimpleData", "Neat Simple Data Tree");
 
-        neatdataTree->Branch("tdc_midasid", &neatevent.tdc_midasid, "tdc_midasid/I");
-        neatdataTree->Branch("tdc_eventid", &neatevent.tdc_eventid, "tdc_eventid/I");
-        neatdataTree->Branch("tdc_nu_of_hits", &neatevent.tdc_num_of_hits, "tdc_num_of_hits/I");
-        neatdataTree->Branch("tdc_timestampdata", neatevent.tdc_timestampdata, "tdc_timestampdata[num_of_hits]/I");
-        neatdataTree->Branch("tdc_ChannelNumData", neatevent.tdc_channodata, "tdc_channodata[num_of_hits]/I");
-        neatdataTree->Branch("tdc_Channel0Data", &neatevent.tdc_chan0Data, "tdc_chan0Data/I");
-        neatdataTree->Branch("tdc_Channel1Data", &neatevent.tdc_chan1Data, "tdc_chan1Data/I");
-        neatdataTree->Branch("tdc_tdiff", &neatevent.tdc_tdiff, "tdc_chan1Data/F");
-        neatdataTree->Branch("digi_midasid", &neatevent.digi_midasid, "digi_midasid/I");
-        neatdataTree->Branch("digi_eventid", &neatevent.digi_eventid, "digi_eventid/I");
-        neatdataTree->Branch("digi_timetag", &neatevent.digi_timetag, "digi_timetag/I");
-        neatdataTree->Branch("digi_ch0dat", neatevent.digi_ch0dat, "digi_ch0dat/I");
-        neatdataTree->Branch("digi_ch1dat", neatevent.digi_ch1dat, "digi_ch1dat/I");
-        neatdataTree->Branch("digi_ch2dat", neatevent.digi_ch2dat, "digi_ch2dat/I");
-        neatdataTree->Branch("digi_ch3dat", neatevent.digi_ch3dat, "digi_ch3dat/I");
-        neatdataTree->Branch("digi_ch4dat", neatevent.digi_ch4dat, "digi_ch4dat/I");
-        neatdataTree->Branch("digi_maxadcvalue", neatevent.digi_maxadcvalue, "digi_maxadcvalue/I");
-        neatdataTree->Branch("digi_maxtimetag", neatevent.digi_maxtimetag, "digi_maxtimetag/I");
-        neatdataTree->Branch("XhitPosition", &neatevent.posx, "digi_Xposition/F");
-        neatdataTree->Branch("YhitPosition", &neatevent.posy, "digi_Yposition/F");
+        neat->Branch("digi_midasid", &psevent.midasid, "midasid/I");
+        neat->Branch("digi_eventid", &psevent.eventid, "midasid/I");
+        neat->Branch("digi_timetag", &psevent.timetag, "timetag/i");
+        neat->Branch("digi_maxadcvalue", psevent.maxadc, "maxadc[5]/I");
+        neat->Branch("digi_maxtimetag", psevent.maxtimetag, "maxtimetag[5]/i");
+        neat->Branch("digi_base", psevent.base, "base[5]/F");
+        neat->Branch("digi_ch0data", psevent.ch0data,"ch0data[4096]/I");
+        neat->Branch("digi_ch1data", psevent.ch1data,"ch1data[4096]/I");
+        neat->Branch("digi_ch2data", psevent.ch2data,"ch2data[4096]/I");
+        neat->Branch("digi_ch3data", psevent.ch3data,"ch3data[4096]/I");
+        neat->Branch("digi_ch4data", psevent.ch4data,"ch4data[4096]/I");
+        neat->Branch("digi_XhitPosition", &psevent.posx,"posx/F");
+        neat->Branch("digi_YhitPosition", &psevent.posy,"posy/F");
+        neat->Branch("tdc_midasid", &event.midasid, "midasid/I");
+        neat->Branch("tdc_eventid", &event.eventid, "eventid/I");
+        neat->Branch("tdc_nu_of_hits", &event.num_of_hits, "num_of_hits/I");
+        neat->Branch("tdc_timestampdata", event.timestampdata, "timestampdata[num_of_hits]/I");
+        neat->Branch("tdc_ChannelNumData", event.channodata, "channodata[num_of_hits]/I");
+        neat->Branch("tdc_Channel0Data", &event.chan0Data, "chan0Data/I");
+        neat->Branch("tdc_Channel1Data", &event.chan1Data, "chan1Data/I");
+        neat->Branch("tdc_tdiff", &event.tdiff, "tdc_chan1Data/F");
 
-        neatsimpleTree->Branch("tdc_tdiff", &neatevent.tdc_tdiff, "tdc_chan1Data/F");
-        neatsimpleTree->Branch("XhitPosition", &neatevent.posx, "digi_Xposition/F");
-        neatsimpleTree->Branch("YhitPosition", &neatevent.posy, "digi_Yposition/F");
 #endif
 
     }
@@ -325,14 +310,16 @@ public:
 
         TV1720RawData *v1720 = dataContainer.GetEventData<TV1720RawData>("DG01");
 
-        double sadc, smaxadc = 0;
-        int k, smaxpos = 0;
-        int doubleeventflag = 0;
-        int outofwindoweventflag = 1;
-        int windowmin = 500 , windowmax = 1500;
-
+        
         if (v1720 && !v1720->IsZLECompressed())
         {
+            
+            double sadc, smaxadc = 0;
+             int k, smaxpos = 0;
+             int doubleeventflag = 0;
+             int outofwindoweventflag = 1;
+             int windowmin = 500 , windowmax = 1500;
+
             psevent.timetag = v1720->GetTriggerTag();
             TV1720RawChannel channelDatasum = v1720->GetChannelData(4);
             int numsam = channelDatasum.GetNSamples();
@@ -460,9 +447,9 @@ public:
             if (getrawdata == 1)
                 outfile <<psevent.midasid<< "\t"<<psevent.timetag<<"\t"<<maxch[0]<<"\t";
                 outfile <<maxch[1]<<"\t"<<maxch[2]<<"\t"<<maxch[3]<<"\t";
-                outfile <<psevent.posx<<"\t"<<psevent.posy<<"\t"<<"\n";
-
-            f1720Tree->Fill();
+                outfile <<psevent.posx<<"\t"<<psevent.posy;
+                
+            //f1720Tree->Fill();
         }
 #endif
 
@@ -514,8 +501,10 @@ public:
                 if (channo == 1)
                     event.chan1Data = chandata;
 
-                if (getrawdata == 1)
+                if (getrawdata == 11)
                     outfile << channo << "\t" << chandata << "\n";
+
+                event.tdiff = event.chan1Data - event.chan0Data;
             }
             hitcounts->Fill(numhit * 10 + stopchancount);
             nuofhits->Fill(numhit);
@@ -539,10 +528,11 @@ public:
                 temptdiff = tdiff;
                 shits->Fill(tdiff);
                 alltdiff->Fill(tdiff);
+                event.tdiff = tdiff;
             }
 
             if (getrawdata == 1)
-                outfile <<  "\t" <<psevent.midasid<<"\t"<<temptdiff<<"\t"<<"\n";
+                outfile <<  "\t" <<psevent.midasid<<"\t"<<temptdiff<<"\n";
 
 
 
@@ -592,46 +582,50 @@ public:
                 }
             }
 
-            f1290Tree->Fill();
+            //f1290Tree->Fill();
         }
 #endif
+        neat->Fill();
 
         return true;
     };
 
-    // complicated method to set correct filename when dealing with subruns.
-    std::string SetFullOutputFileName(int run, std::string midasfilename) {
-        char buff[128];
-        Int_t in_num = 0, part = 0;
-        Int_t num[2] = {0, 0};  // run and subrun values
-        // get run/subrun numbers from file name
-        for (int i = 0;; ++i) {
-            char ch = midasfilename[i];
-            if (!ch) break;
-            if (ch == '/') {
-                // skip numbers in the directory name
-                num[0] = num[1] = in_num = part = 0;
-            } else if (ch >= '0' && ch <= '9' && part < 2) {
-                num[part] = num[part] * 10 + (ch - '0');
-                in_num = 1;
-            } else if (in_num) {
-                in_num = 0;
-                ++part;
-            }
+    // Complicated method to set correct filename when dealing with subruns.
+  std::string SetFullOutputFileName(int run, std::string midasFilename)
+  {
+    char buff[128]; 
+    Int_t in_num = 0, part = 0;
+    Int_t num[2] = { 0, 0 }; // run and subrun values
+    // get run/subrun numbers from file name
+    for (int i=0; ; ++i) {
+      char ch = midasFilename[i];
+        if (!ch) break;
+        if (ch == '/') {
+          // skip numbers in the directory name
+          num[0] = num[1] = in_num = part = 0;
+        } else if (ch >= '0' && ch <= '9' && part < 2) {
+          num[part] = num[part] * 10 + (ch - '0');
+          in_num = 1;
+        } else if (in_num) {
+          in_num = 0;
+          ++part;
         }
-        if (part == 2) {
-            if (run != num[0]) {
-                std::cerr << "file name run number (" << num[0]
-                          << ") disagrees with midas run (" << run << ")" << std::endl;
-                exit(1);
-            }
-            sprintf(buff, "outfiles/soutput_%.6d_%.4d.root", run, num[1]);
-            printf("using filename %s\n", buff);
-        } else {
-            sprintf(buff, "outfiles/run_root%.5d.root", run);
-        }
-        return std::string(buff);
-    };
+    }
+    if (part == 2) {
+      if (run != num[0]) {
+        std::cerr << "File name run number (" << num[0]
+                  << ") disagrees with MIDAS run (" << run << ")" << std::endl;
+        exit(1);
+      }
+      sprintf(buff,"outfiles/output_%.6d_%.4d.root", run, num[1]);
+      printf("Using filename %s\n",buff);
+    } else {
+      sprintf(buff,"outfiles/run_root%.5d.root", run);
+    }
+    return std::string(buff);
+  };
+
+
 };
 
 int main(int argc, char *argv[]) {
