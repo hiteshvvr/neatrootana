@@ -304,7 +304,7 @@ public:
         // int i,k;
         int i, numsamples, j;
 //        if(getrawdata == 1)
-//            outfile << "!!!" << "\n" << psevent.midasid << "\n";
+            outfile << "!!!" << "\n" << psevent.midasid << "\n";
 
 #ifdef USE_V1720
 
@@ -352,7 +352,7 @@ public:
 //        if (doubleeventflag || outofwindoweventflag) return;
 //          printf("doubleeventflag= %d\n",doubleeventflag);
             int channelmask = v1720->GetChannelMask();
-            double maxch[4];
+            double maxch[4] = {0};
 
             std::bitset<8> chmaskbit(channelmask);   // Getting channelmask as an array
             for (i = 0; i < 8; i++)
@@ -380,8 +380,7 @@ public:
                             maxadcpos = j;
                             maxtime  = j * 4;
                         }
-                        if (getrawdata == 57)
-                            outfile << psevent.timetag + i * 4 << "    " << adc << "\n";
+                        if (getrawdata == 570) outfile << psevent.timetag + i * 4 << "    " << adc << "\n";
                     }
 
                         if(i == 0)for(j = 0;j<numsamples;j++)psevent.ch0data[j] = channelData.GetADCSample(j);
@@ -445,9 +444,9 @@ public:
             focused->Fill(psevent.posx, psevent.posy);
 
             if (getrawdata == 1)
-                outfile <<psevent.midasid<< "\t"<<psevent.timetag<<"\t"<<maxch[0]<<"\t";
-                outfile <<maxch[1]<<"\t"<<maxch[2]<<"\t"<<maxch[3]<<"\t";
-                outfile <<psevent.posx<<"\t"<<psevent.posy;
+                outfile <<smaxpos<< "; "<<maxch[0]<<"; ";
+                outfile <<maxch[1]<<"; "<<maxch[2]<<"; "<<maxch[3]<<"; ";
+                outfile <<psevent.posx<<"; "<<psevent.posy << "\n";
                 
             //f1720Tree->Fill();
         }
@@ -501,7 +500,7 @@ public:
                 if (channo == 1)
                     event.chan1Data = chandata;
 
-                if (getrawdata == 11)
+                if (getrawdata == 1)
                     outfile << channo << "\t" << chandata << "\n";
 
                 event.tdiff = event.chan1Data - event.chan0Data;
@@ -531,7 +530,7 @@ public:
                 event.tdiff = tdiff;
             }
 
-            if (getrawdata == 1)
+            if (getrawdata == 188)
                 outfile <<  "\t" <<psevent.midasid<<"\t"<<temptdiff<<"\n";
 
 
