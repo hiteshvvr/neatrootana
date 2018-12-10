@@ -227,11 +227,11 @@ public:
         neat->Branch("digi_maxadcvalue", psevent.maxadc, "maxadc[5]/I");
         neat->Branch("digi_maxtimetag", psevent.maxtimetag, "maxtimetag[5]/i");
         neat->Branch("digi_base", psevent.base, "base[5]/F");
-        neat->Branch("digi_ch0data", psevent.ch0data,"ch0data[4096]/I");
-        neat->Branch("digi_ch1data", psevent.ch1data,"ch1data[4096]/I");
-        neat->Branch("digi_ch2data", psevent.ch2data,"ch2data[4096]/I");
-        neat->Branch("digi_ch3data", psevent.ch3data,"ch3data[4096]/I");
-        neat->Branch("digi_ch4data", psevent.ch4data,"ch4data[4096]/I");
+        // neat->Branch("digi_ch0data", psevent.ch0data,"ch0data[4096]/I");
+        // neat->Branch("digi_ch1data", psevent.ch1data,"ch1data[4096]/I");
+        // neat->Branch("digi_ch2data", psevent.ch2data,"ch2data[4096]/I");
+        // neat->Branch("digi_ch3data", psevent.ch3data,"ch3data[4096]/I");
+        // neat->Branch("digi_ch4data", psevent.ch4data,"ch4data[4096]/I");
         neat->Branch("xpos", &psevent.posx,"posx/F");
         neat->Branch("ypos", &psevent.posy,"posy/F");
         neat->Branch("tdc_midasid", &event.midasid, "midasid/I");
