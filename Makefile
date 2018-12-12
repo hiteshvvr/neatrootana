@@ -65,6 +65,7 @@ endif # MIDASSYS
 OBJS:=
 OBJS += TV1720Waveform.o
 OBJS += TV1720Correlations.o
+OBJS += massselect.o
 OBJS += TV1290Histogram.o
 OBJS += TAnaManager.o
 
