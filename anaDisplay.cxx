@@ -59,6 +59,7 @@ public:
     
     if(anaManager->Havemassselect()) 
         AddSingleCanvas(new TFancyHistogramCanvas(anaManager->Getmassselect(),"MassSelected"));
+    AddSingleCanvas(new TComplicatedExampleCanvas());
 
     // if(anaManager->HaveV1720Ch1()) 
     //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Ch1(),"V1720 Ch1Data"));

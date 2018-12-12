@@ -27,8 +27,8 @@ public:
 
 private:
 int numhit;
-float wattim = 2000;
-float hmoltim = 1000;
+float wattim = 1765;
+float hmoltim = 545;
 float watmass = 18.02;
 float hmolmass = 2.014;
 float hatommass = 1.007;
