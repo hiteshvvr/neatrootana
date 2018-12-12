@@ -1,6 +1,6 @@
 #ifndef massselect_h
 #define massselect_h
-
+#define RES_1290N 0.0245
 #include <string>
 #include "THistogramArrayBase.h"
 #include "TH2D.h"
@@ -26,8 +26,19 @@ public:
   }
 
 private:
+int numhit;
+float wattim = 2000;
+float hmoltim = 1000;
+float watmass = 18.02;
+float hmolmass = 2.014;
+float hatommass = 1.007;
+float ohmass = watmass - hatommass;
+float neonmass = 20;
+float neondimmass = 40;
+float dmass1 = 0.5;
+float dmass2 = 1;
+
 };
 
 #endif
-
 

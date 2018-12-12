@@ -56,6 +56,9 @@ public:
 
     if(anaManager->HaveV1720Correlations()) 
       AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Correlations(),"V1720 Correlations"));
+    
+    if(anaManager->Havemassselect()) 
+        AddSingleCanvas(new TFancyHistogramCanvas(anaManager->Getmassselect(),"MassSelected"));
 
     // if(anaManager->HaveV1720Ch1()) 
     //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Ch1(),"V1720 Ch1Data"));
