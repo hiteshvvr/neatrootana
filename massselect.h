@@ -37,6 +37,12 @@ float neonmass = 20;
 float neondimmass = 40;
 float dmass1 = 0.5;
 float dmass2 = 1;
+float mass = 0;
+
+// INSERT THESE VALUES
+float intercept = 1;
+float slope = 1;
+
 
 };
 

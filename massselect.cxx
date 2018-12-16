@@ -206,13 +206,12 @@ void massselect::UpdateHistograms(TDataContainer &dataContainer) {
     double chy = (maxch[1]+maxch[2])/sum;    
 
 
-    float m = 0;
-    float c = 0;
-    m = (wattim - hmoltim)/(watmass - hmolmass);
-    c = wattim - m*watmass;
+//    float m = 0;
+//    float c = 0;
+//    m = (wattim - hmoltim)/(watmass - hmolmass);
+//    c = wattim - m*watmass;
 
-    float mass = 0;
-    mass = (tdiff - c)/m;
+    mass = (tdiff - intercept)/slope;
     mass = mass*mass;
 
     GetHistogram(0)->Fill(mass);
