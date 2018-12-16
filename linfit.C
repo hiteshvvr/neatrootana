@@ -14,8 +14,8 @@
         cout << "\tTime:\t";
         cin >> x[i];
     }
-    // for(int i = 0; i<3;i++) y[i] = sqrt(y[i]);
-    TGraph *m = new TGraph(n,x,y);
+     for(int i = 0; i<3;i++) y[i] = sqrt(y[i]);
+    TGraph *m = new TGraph(n,y,x);
     m->Fit("pol1");
     m->Draw("AP*");
 

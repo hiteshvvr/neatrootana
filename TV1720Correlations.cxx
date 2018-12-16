@@ -45,7 +45,7 @@ void TV1720Correlations::CreateHistograms() {
     sum->SetYTitle("Counts");
     push_back(sum);
 
-    TH2D *complete= new TH2D("complete", "complete", 200, 0,1, 200,0,1);
+    TH2D *complete= new TH2D("complete", "complete", 100, 0,1, 100,0,1);
     complete->SetXTitle("X Coordinate");
     complete->SetYTitle("Y Coordinate");
     push_back(complete);

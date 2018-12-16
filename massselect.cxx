@@ -211,8 +211,26 @@ void massselect::UpdateHistograms(TDataContainer &dataContainer) {
 //    m = (wattim - hmoltim)/(watmass - hmolmass);
 //    c = wattim - m*watmass;
 
+float wattim = 1765;
+float hmoltim = 545;
+float watmass = 18.02;
+float hmolmass = 2.014;
+float hatommass = 1.007;
+float ohmass = watmass - hatommass;
+float neonmass = 20;
+float neondimmass = 40;
+float dmass1 = 0.5;
+float dmass2 = 1;
+
+
+    float mass = 0;
+    float intercept = -20.5978;
+    float slope  = 461.992;
+
+
     mass = (tdiff - intercept)/slope;
     mass = mass*mass;
+//    std::cout << mass <<std::endl;
 
     GetHistogram(0)->Fill(mass);
     if(hatommass-dmass1<mass && mass<hatommass+dmass1)
