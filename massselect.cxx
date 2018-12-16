@@ -3,6 +3,7 @@
 #include "TDirectory.h"
 #include "TV1720RawData.h"
 #include "TV1290Data.hxx"
+#include "TLine.h"
 
 #include "TInterestingEventManager.hxx"
 
@@ -227,14 +228,22 @@ float dmass2 = 1;
     float intercept = -20.5978;
     float slope  = 461.992;
 
-
+    
     mass = (tdiff - intercept)/slope;
     mass = mass*mass;
 //    std::cout << mass <<std::endl;
 
     GetHistogram(0)->Fill(mass);
     if(hatommass-dmass1<mass && mass<hatommass+dmass1)
-        GetHistogram(1)->Fill(chx,chy);
+    {
+
+     GetHistogram(1)->Fill(chx,chy);
+
+    // TLine *line = new TLine(0.0,0.5,1.0,0.5);
+    // line->SetLineColor(kRed);
+    // line->Draw();
+  } 
+
     if(hmolmass-dmass1<mass && mass<hmolmass+dmass1)
         GetHistogram(2)->Fill(chx,chy);
     if(ohmass-dmass1<mass && mass<ohmass+dmass1)
