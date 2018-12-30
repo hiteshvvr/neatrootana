@@ -92,6 +92,7 @@ public:
         float digi_ch3dat[4096];
         float digi_ch4dat[4096];
         int digi_maxadcvalue[5];
+        // int digi_adcoverrange = 0;
         uint32_t digi_maxtimetag[5];
         double posx;
         double posy;
@@ -121,6 +122,7 @@ public:
         int ch2data[4096] = {0};
         int ch3data[4096] = {0};
         int ch4data[4096] = {0};
+        int adcoverrange = 0 ;
         float posx = 0;
         float posy = 0;
     } psevent;
@@ -226,6 +228,7 @@ public:
         neat->Branch("digi_timetag", &psevent.timetag, "timetag/i");
         neat->Branch("digi_maxadcvalue", psevent.maxadc, "maxadc[5]/I");
         neat->Branch("digi_maxtimetag", psevent.maxtimetag, "maxtimetag[5]/i");
+        neat->Branch("digi_adcoverrange", &psevent.adcoverrange, "adcoverrange/i");
         neat->Branch("digi_base", psevent.base, "base[5]/F");
         // neat->Branch("digi_ch0data", psevent.ch0data,"ch0data[4096]/I");
         // neat->Branch("digi_ch1data", psevent.ch1data,"ch1data[4096]/I");
@@ -382,6 +385,7 @@ public:
                         }
                         if (getrawdata == 570) outfile << psevent.timetag + i * 4 << "    " << adc << "\n";
                     }
+                    if (maxadc > 4000) psevent.adcoverrange = 1;
 
                         if(i == 0)for(j = 0;j<numsamples;j++)psevent.ch0data[j] = channelData.GetADCSample(j);
                         if(i == 1)for(j = 0;j<numsamples;j++)psevent.ch1data[j] = channelData.GetADCSample(j);
@@ -444,9 +448,9 @@ public:
             focused->Fill(psevent.posx, psevent.posy);
 
             if (getrawdata == 1)
-                outfile <<smaxpos<< "; "<<maxch[0]<<"; ";
-                outfile <<maxch[1]<<"; "<<maxch[2]<<"; "<<maxch[3]<<"; ";
-                outfile <<psevent.posx<<"; "<<psevent.posy << "\n";
+                outfile <<smaxpos<< ", "<<maxch[0]<<", ";
+                outfile <<maxch[1]<<", "<<maxch[2]<<", "<<maxch[3]<<", ";
+                outfile <<psevent.posx<<", "<<psevent.posy << "\n";
                 
             //f1720Tree->Fill();
         }
@@ -454,7 +458,7 @@ public:
 
 #ifdef USE_V1290
         TV1290Data *v1290data= dataContainer.GetEventData<TV1290Data>("TDC0");
-        if (!v1290data) return 0 ;
+        // if (!v1290data) return 0 ;
         if (v1290data) {
 
             int numhit;
