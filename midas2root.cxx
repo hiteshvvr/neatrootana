@@ -444,9 +444,9 @@ public:
             focused->Fill(psevent.posx, psevent.posy);
 
             if (getrawdata == 1)
-                outfile <<smaxpos<< "; "<<maxch[0]<<"; ";
-                outfile <<maxch[1]<<"; "<<maxch[2]<<"; "<<maxch[3]<<"; ";
-                outfile <<psevent.posx<<"; "<<psevent.posy << "\n";
+                outfile <<smaxpos<< ", "<<maxch[0]<<", ";
+                outfile <<maxch[1]<<", "<<maxch[2]<<", "<<maxch[3]<<", ";
+                outfile <<psevent.posx<<", "<<psevent.posy << "\n";
                 
             //f1720Tree->Fill();
         }
@@ -501,7 +501,7 @@ public:
                     event.chan1Data = chandata;
 
                 if (getrawdata == 1)
-                    outfile << channo << "\t" << chandata << "\n";
+                    outfile << channo << ", " << chandata << "\n";
 
                 event.tdiff = event.chan1Data - event.chan0Data;
             }
@@ -531,7 +531,7 @@ public:
             }
 
             if (getrawdata == 188)
-                outfile <<  "\t" <<psevent.midasid<<"\t"<<temptdiff<<"\n";
+                outfile <<  ", " <<psevent.midasid<<"\t"<<temptdiff<<"\n";
 
 
 
