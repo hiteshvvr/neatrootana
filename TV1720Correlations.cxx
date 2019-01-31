@@ -130,16 +130,17 @@ void TV1720Correlations::UpdateHistograms(TDataContainer &dataContainer) {
     if(windowmin < smaxpos && smaxpos < windowmax)
     {
     double smaxfac = smaxadc/2.5;
-    for (k = windowmin; k < smaxpos-70; k++) 
+    double threshold = 1700;
+    for (k = windowmin; k < smaxpos-30; k++) 
     {
         sadc = channelDatasum.GetADCSample(k);
-        if (sadc > smaxfac ) doubleeventflag = 1;
+        if (sadc > threshold) doubleeventflag = 1;
     }
     
-    for (k = smaxpos+70; k < windowmax; k++) 
+    for (k = smaxpos+30; k < windowmax; k++) 
     {
         sadc = channelDatasum.GetADCSample(k);
-        if (sadc > smaxfac ) doubleeventflag = 1;
+        if (sadc > threshold) doubleeventflag = 1;
     }
 
 //    printf("doubleeventflag= %d\n",doubleeventflag);
