@@ -24,7 +24,7 @@ public:
   TAnaManager *anaManager;
 
   MyTestLoop() {
-    SetOutputFilename("neatout");
+    SetOutputFilename("OnlineOutFiles/run");
     DisableRootOutput(false);
     anaManager = new TAnaManager();
     // Number of events to skip before plotting one.
