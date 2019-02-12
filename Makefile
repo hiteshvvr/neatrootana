@@ -67,6 +67,7 @@ OBJS += TV1720Waveform.o
 OBJS += TV1720Correlations.o
 OBJS += massselect.o
 OBJS += TV1290Histogram.o
+OBJS += TIMEStamp.o
 OBJS += TAnaManager.o
 
 all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe

@@ -15,34 +15,20 @@ public:
   TIMEStamp(int bklen, int bktype, const char* name, void *pdata);
 
   /// Get the Time in second
-  uint32_t GetUnixSecondTime() const {return (timeinsec & 0xfffffff);};
+  uint32_t GetUnixSecondTime() const {return (timeinsec & 0xffffffff);};
 
   /// Get the NanoSecond Time
-  uint32_t GetNanoSecTime() const {return (timeinnanosec & 0xfffffff);};
+  uint32_t GetNanoSecTime() const {return (timeinnanosec & 0xffffffff);};
 
   /// Get Total Time in Nanosecond Precision
-  uint32_t GetTotalTime() const {return (timeinnanosec & 0xfffffff);};
-
-  }
-  
-
-  void Print();
+  uint64_t GetTotalTime() const {return ((timeinsec & 0xffffffff) * 1000000000 + (timeinnanosec & 0xffffffff));};
 
 
 private:
 
-  /// Helper method to handle uncompressed data.
-  void HandlUncompressedData();
-
-  /// The overall global headers
   uint32_t timeinsec;
-  uint32_t fGlobalHeader1;
-  uint32_t fGlobalHeader2;
-  uint32_t fGlobalHeader3;
+  uint32_t timeinnanosec;
   
-
-  /// Vector of V1740 measurements
-  std::vector<TV1740RawChannel> fMeasurements;
 
 };
 

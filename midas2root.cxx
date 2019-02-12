@@ -38,6 +38,8 @@
 #include "TV1290Data.hxx"
 #endif
 
+#include "TIMEStamp.h"
+
 
 class Analyzer : public TRootanaEventLoop
 {
@@ -305,6 +307,35 @@ public:
         int i, numsamples, j;
 //        if(getrawdata == 1)
             outfile << "!!!" << "\n" << psevent.midasid << "\n";
+            outfile << dataContainer.GetMidasData().GetTimeStamp() << ", ";
+
+#ifdef USE_TIMESTAMP  // needs to be changed
+
+        TIMEStamp *timedata = dataContainer.GetEventData<TIMEStamp>("TIME");
+        if(timedata)
+        {
+
+            double totaltime;
+            double unixtimeinsec;
+            double timeinnanosec;
+
+            
+
+            unixtimeinsec = timedata->GetUnixSecondTime();
+            timeinnanosec = timedata->GetNanoSecTime();
+
+            totaltime = unixtimeinsec + timeinnanosec/1000000000.0;
+            std::cout.precision(10);
+
+            outfile << std::fixed << totaltime << ", ";
+            // std::cout << std::fixed << timedata->GetUnixSecondTime() + timedata->GetNanoSecTime()/ 1000000000.0 ;
+            // std::cout << std::endl;
+
+        }
+
+
+#endif
+
 
 #ifdef USE_V1720
 
