@@ -307,7 +307,7 @@ public:
         int i, numsamples, j;
 //        if(getrawdata == 1)
             // outfile << "!!!" << "\n" << psevent.midasid << "\n";
-            outfile << dataContainer.GetMidasData().GetTimeStamp() << ", ";
+            // outfile << dataContainer.GetMidasData().GetTimeStamp() << ", ";
 
 #ifdef USE_TIMESTAMP  // needs to be changed
 
@@ -364,13 +364,29 @@ public:
             }
 
             TV1720RawChannel channel0data = v1720->GetChannelData(0);
-            numsam = channelDatasum.GetNSamples();
+            numsam = channel0data.GetNSamples();
             int adc0 = 0;
+            int sam7 = 0;
+            int sam70 = 0;
+            int sam700 = 0;
+            if(numsam > 0)
+            {
             for (k = 0; k < numsam ; k++)
             adc0 =  adc0 + channel0data.GetADCSample(k);
-            adc0 = adc0/numsam;
-            // outfile <<adc0<< ", ";
 
+            adc0 = adc0/numsam;
+            outfile << adc0 << ", ";
+
+            sam7 = channel0data.GetADCSample(7);
+            outfile << sam7 << ", ";
+
+            sam70 = channel0data.GetADCSample(70);
+            outfile << sam70 << ", ";
+            
+            sam700 = channel0data.GetADCSample(700);
+            outfile << sam700 << "\n ";
+
+            }
 
             if(windowmin < smaxpos && smaxpos < windowmax)
             {
@@ -420,7 +436,7 @@ public:
                             maxadcpos = j;
                             maxtime  = j * 4;
                         }
-                        if (getrawdata == 570) outfile << psevent.timetag + i * 4 << "    " << adc << "\n";
+                        // if (getrawdata == 570) outfile << psevent.timetag + i * 4 << "    " << adc << "\n";
                     }
 
                         if(i == 0)for(j = 0;j<numsamples;j++)psevent.ch0data[j] = channelData.GetADCSample(j);
@@ -485,11 +501,11 @@ public:
             complete->Fill(psevent.posx, psevent.posy);
             focused->Fill(psevent.posx, psevent.posy);
 
-            if (getrawdata == 1)
-                outfile <<smaxpos<< ", "<<adc0<<", ";
-                outfile <<maxch[0]<<", ";
-                outfile <<maxch[1]<<", "<<maxch[2]<<", "<<maxch[3]<<", ";
-                outfile <<psevent.posx<<", "<<psevent.posy << "\n";
+            // if (getrawdata == 100)
+            //     outfile <<smaxpos<< ", "<<adc0<<", ";
+            //     outfile <<maxch[0]<<", ";
+            //     outfile <<maxch[1]<<", "<<maxch[2]<<", "<<maxch[3]<<", ";
+            //     outfile <<psevent.posx<<", "<<psevent.posy << "\n";
                 
             //f1720Tree->Fill();
         }
@@ -544,7 +560,7 @@ public:
                     event.chan1Data = chandata;
 
                 if (getrawdata == 1)
-                    outfile << channo << ", " << chandata << "\n";
+                    // outfile << channo << ", " << chandata << "\n";
 
                 event.tdiff = event.chan1Data - event.chan0Data;
             }
@@ -574,7 +590,7 @@ public:
             }
 
             if (getrawdata == 188)
-                outfile <<  ", " <<psevent.midasid<<"\t"<<temptdiff<<"\n";
+                // outfile <<  ", " <<psevent.midasid<<"\t"<<temptdiff<<"\n";
 
 
 

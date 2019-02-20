@@ -2,11 +2,17 @@ clear
 #make clean
 make
 #clear
+# ./midas2root.exe ~/AllData/NeatData/run00012.mid
+# ./midas2root.exe ~/AllData/NeatData/run00013.mid
+# # ./midas2root.exe ~/AllData/NeatData/run00014.mid
+./midas2root.exe ~/AllData/NeatData/run00015.mid
+./midas2root.exe ~/AllData/NeatData/run00016.mid
+./midas2root.exe ~/AllData/NeatData/run00017.mid
 ./midas2root.exe ~/AllData/NeatData/run00018.mid
 ./midas2root.exe ~/AllData/NeatData/run00019.mid
 ./midas2root.exe ~/AllData/NeatData/run00020.mid
-./midas2root.exe ~/AllData/NeatData/run00021.mid
-./midas2root.exe ~/AllData/NeatData/run00022.mid
+# ./midas2root.exe ~/AllData/NeatData/run00021.mid
+# ./midas2root.exe ~/AllData/NeatData/run00022.mid
 
 cp ./outfiles/run_csv00018.csv ../../online/
 cp ./outfiles/run_csv00019.csv ../../online/
