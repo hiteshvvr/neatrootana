@@ -306,7 +306,7 @@ public:
         // int i,k;
         int i, numsamples, j;
 //        if(getrawdata == 1)
-            outfile << "!!!" << "\n" << psevent.midasid << "\n";
+            // outfile << "!!!" << "\n" << psevent.midasid << "\n";
             outfile << dataContainer.GetMidasData().GetTimeStamp() << ", ";
 
 #ifdef USE_TIMESTAMP  // needs to be changed
@@ -362,6 +362,15 @@ public:
                     smaxpos = k;
                 }
             }
+
+            TV1720RawChannel channel0data = v1720->GetChannelData(0);
+            numsam = channelDatasum.GetNSamples();
+            int adc0 = 0;
+            for (k = 0; k < numsam ; k++)
+            adc0 =  adc0 + channel0data.GetADCSample(k);
+            adc0 = adc0/numsam;
+            // outfile <<adc0<< ", ";
+
 
             if(windowmin < smaxpos && smaxpos < windowmax)
             {
@@ -428,7 +437,8 @@ public:
                             base = base+channelData.GetADCSample(j);
                         }
                         base = base/(numsam-maxadcpos-450);
-                        maxch[i] = maxadc-base;
+                        // maxch[i] = maxadc-base;
+                        maxch[i] = maxadc;
                     }
 
                     if(smaxpos >= 1000)
@@ -438,7 +448,8 @@ public:
                             base = base+channelData.GetADCSample(j);
                         }
                        base = base/(maxadcpos-250);
-                       maxch[i] = maxadc-base;
+                       // maxch[i] = maxadc-base;
+                       maxch[i] = maxadc;
                     }
 
                     psevent.maxadc[i] =  maxch[i];
@@ -475,7 +486,8 @@ public:
             focused->Fill(psevent.posx, psevent.posy);
 
             if (getrawdata == 1)
-                outfile <<smaxpos<< ", "<<maxch[0]<<", ";
+                outfile <<smaxpos<< ", "<<adc0<<", ";
+                outfile <<maxch[0]<<", ";
                 outfile <<maxch[1]<<", "<<maxch[2]<<", "<<maxch[3]<<", ";
                 outfile <<psevent.posx<<", "<<psevent.posy << "\n";
                 
