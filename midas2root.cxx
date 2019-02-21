@@ -328,6 +328,7 @@ public:
             std::cout.precision(10);
 
             outfile << std::fixed << totaltime << ", ";
+            // outfile << std::fixed << unixtimeinsec<< ", ";
             // std::cout << std::fixed << timedata->GetUnixSecondTime() + timedata->GetNanoSecTime()/ 1000000000.0 ;
             // std::cout << std::endl;
 
@@ -352,6 +353,7 @@ public:
              int windowmin = 500 , windowmax = 1500;
 
             psevent.timetag = v1720->GetTriggerTag();
+            double dtime  = v1720->GetTriggerTag();
             TV1720RawChannel channelDatasum = v1720->GetChannelData(4);
             int numsam = channelDatasum.GetNSamples();
             for (k = 0; k < numsam ; k++) {
@@ -373,6 +375,8 @@ public:
             {
             for (k = 0; k < numsam ; k++)
             adc0 =  adc0 + channel0data.GetADCSample(k);
+
+            outfile << dtime << ",";
 
             adc0 = adc0/numsam;
             outfile << adc0 << ", ";
