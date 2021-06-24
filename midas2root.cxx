@@ -121,8 +121,10 @@ class Analyzer : public TRootanaEventLoop
             int ch2data[4096] = {0};
             int ch3data[4096] = {0};
             int ch4data[4096] = {0};
+            int ch5data[2048] = {0};
             float posx = 0;
             float posy = 0;
+            float beamcond = 0;
         } psevent;
 
         // Define the Histograms
@@ -233,8 +235,10 @@ class Analyzer : public TRootanaEventLoop
             // neat->Branch("digi_ch2data", psevent.ch2data,"ch2data[4096]/I");
             // neat->Branch("digi_ch3data", psevent.ch3data,"ch3data[4096]/I");
             // neat->Branch("digi_ch4data", psevent.ch4data,"ch4data[4096]/I");
+            // neat->Branch("digi_ch5data", psevent.ch5data,"ch5data[2048]/I");
             neat->Branch("xpos", &psevent.posx,"posx/F");
             neat->Branch("ypos", &psevent.posy,"posy/F");
+            neat->Branch("beamcond", &psevent.beamcond,"beamcond/F");
             neat->Branch("tdc_midasid", &event.midasid, "midasid/I");
             neat->Branch("tdc_eventid", &event.eventid, "eventid/I");
             neat->Branch("tdc_nu_of_hits", &event.num_of_hits, "num_of_hits/I");
@@ -356,14 +360,14 @@ class Analyzer : public TRootanaEventLoop
                 //        if (doubleeventflag || outofwindoweventflag) return;
                 //          printf("doubleeventflag= %d\n",doubleeventflag);
                 int channelmask = v1720->GetChannelMask();
-                double maxch[4] = {0};
+                double maxch[6] = {0};
 
                 std::bitset<8> chmaskbit(channelmask);   // Getting channelmask as an array
                 for (i = 0; i < 8; i++)
                 {
                     if (chmaskbit[i] == 1)
                     {
-                        std::cout <<  "the channel no is :\t" << i << std::endl;
+                        // std::cout <<  "the channel no is :\t" << i << std::endl;
                         int chan_no = i;
                         TV1720RawChannel channelData = v1720->GetChannelData(i);
                         numsamples = channelData.GetNSamples();
@@ -425,6 +429,12 @@ class Analyzer : public TRootanaEventLoop
                         if(i == 2) c->Fill(maxadc - base);
                         if(i == 3) d->Fill(maxadc - base);
 
+                        maxch[5]= 0; // using maxch variable to get the beam on/off condition
+                        if(i == 5)for(j = 0;j<numsamples;j++) {
+                            maxch[5] = maxch[5] + channelData.GetADCSample(j);
+                            // psevent.ch5data[j] = channelData.GetADCSample(j);
+                        }
+                        maxch[5] = maxch[5]/numsamples;
 
                         int plotevent = 100;
                         if (psevent.midasid == plotevent)
@@ -443,6 +453,7 @@ class Analyzer : public TRootanaEventLoop
 
                 psevent.posx = (maxch[0] + maxch[1])/sum;
                 psevent.posy = (maxch[1] + maxch[2])/sum;
+                psevent.beamcond = maxch[5];
 
                 hsum->Fill(sum);
                 complete->Fill(psevent.posx, psevent.posy);
