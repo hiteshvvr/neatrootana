@@ -6,14 +6,14 @@
 const int Nchannels = 16;
 
 /// Reset the histograms for this canvas
-TV1290Histograms::TV1290Histograms() {
+TV1290Histograms::TV1290Histograms()
+{
 
     CreateHistograms();
 }
 
-
-void TV1290Histograms::CreateHistograms() {
-
+void TV1290Histograms::CreateHistograms()
+{
 
     // Otherwise make histograms
     clear();
@@ -27,13 +27,13 @@ void TV1290Histograms::CreateHistograms() {
     push_back(alltdiff);
 
     // TH1D *shits = new TH1D("singleHit", "singleHit", 10000, 0, 5000);
-    TH1D *shits = new TH1D("singleHit", "singleHit", 5000, 0, 5000);
+    TH1D *shits = new TH1D("singleHit", "singleHit", 10000, 0, 10000);
     TAxis *saxis = shits->GetXaxis();
     shits->SetXTitle("Time in ns");
     shits->SetYTitle("Counts");
     push_back(shits);
 
-    TH1D *mhits = new TH1D("multiHit", "multiHit", 10000, -5000, 5000);
+    TH1D *mhits = new TH1D("multiHit", "multiHit", 10000, -5e7, 5e7);
     mhits->SetXTitle("Time in ns");
     mhits->SetYTitle("Counts");
     push_back(mhits);
@@ -43,17 +43,15 @@ void TV1290Histograms::CreateHistograms() {
     nuofhits->SetYTitle("Counts");
     push_back(nuofhits);
 
-    TH1I *hitcounts = new TH1I("NuOfHits", "HitDistribution", 50 , -1, 20);
+    TH1I *hitcounts = new TH1I("NuOfHits", "HitDistribution", 100, -1, 100);
     hitcounts->SetXTitle("Hits");
     hitcounts->SetYTitle("Counts");
     push_back(hitcounts);
-
 
     TH1F *tripdis = new TH1F("TripleDis", "Triple distributed 0-eee, 1-eei, 2-eie, 3-eii, 4-iee, 5-iei, 6-iie, 7-iii", 1000, -5, 10);
     tripdis->SetXTitle("Triple Counts");
     tripdis->SetYTitle("Counts");
     push_back(tripdis);
-
 
     TH1D *triples2ion = new TH1D("triples2ion", "Triple With Two Ions", 5000, -7000, 7000);
     triples2ion->SetXTitle("time");
@@ -66,17 +64,27 @@ void TV1290Histograms::CreateHistograms() {
     push_back(triples2electrs);
 
 
+    TH1D *ghits = new TH1D("goodhits", "goodhits", 10000, 0, 10000);
+    TAxis *gaxis = ghits->GetXaxis();
+    ghits->SetXTitle("Time in ns");
+    ghits->SetYTitle("Counts");
+    push_back(ghits);
 
 
-    for ( i = 1; i < Nchannels; i++) { // loop over channels
+
+    for (i = 1; i < Nchannels; i++)
+    { // loop over channels
         // for(int i = 0; i < 3; i++){ // loop over channels
         char name[100];
         char title[100];
         sprintf(name, "V1290_%i_%i", 0, i);
 
         // Delete old histograms, if we already have them
-        TH1D *old = (TH1D*)gDirectory->Get(name);
-        if (old) {delete old;}
+        TH1D *old = (TH1D *)gDirectory->Get(name);
+        if (old)
+        {
+            delete old;
+        }
 
         // Create new histograms
         // printf("%s\n", name );
@@ -87,11 +95,11 @@ void TV1290Histograms::CreateHistograms() {
         tmp->SetYTitle("Number of Entries");
         push_back(tmp);
     }
-
 }
 
 /// Update the histograms for this canvas.
-void TV1290Histograms::UpdateHistograms(TDataContainer& dataContainer) {
+void TV1290Histograms::UpdateHistograms(TDataContainer &dataContainer)
+{
 
     int i;
     int numhit;
@@ -102,17 +110,17 @@ void TV1290Histograms::UpdateHistograms(TDataContainer& dataContainer) {
     int startchancount = 0;
     int stopchancount = 0;
 
-
-    TV1290Data *data = dataContainer.GetEventData<TV1290Data>("TDC0");   //TDC0 is the name of databank
-    if (!data) return;
+    TV1290Data *data = dataContainer.GetEventData<TV1290Data>("TDC0"); //TDC0 is the name of databank
+    if (!data)
+        return;
 
     /// Get the Vector of ADC Measurements.
     std::vector<TDCV1290Measurement> measurements = data->GetMeasurements();
     numhit = measurements.size();
-    for (i = 0; i < numhit ; i++) // loop over measurements
+    for (i = 0; i < numhit; i++) // loop over measurements
     {
         int channo = measurements[i].GetChannel();
-        GetHistogram(channo + 8)->Fill(measurements[i].GetMeasurement() * RES_1290N);
+        GetHistogram(channo + 9)->Fill(measurements[i].GetMeasurement() * RES_1290N);
         if (channo == stopchannel)
         {
             stoptime = measurements[i].GetMeasurement() * RES_1290N;
@@ -125,19 +133,33 @@ void TV1290Histograms::UpdateHistograms(TDataContainer& dataContainer) {
         }
     }
 
+    for (i = 0; i < numhit-1; i++) // loop over measurements
+    {
+        int ch0 = measurements[i].GetChannel();
+        int ch1 = measurements[i+1].GetChannel();
+        if (ch0 == startchannel && ch1 == stopchannel)
+        {
+            starttime = measurements[i].GetMeasurement() * RES_1290N;
+            stoptime = measurements[i+1].GetMeasurement() * RES_1290N;
+            GetHistogram(8)->Fill(stoptime-starttime);
+
+        }
+    }
+
+
     GetHistogram(3)->Fill(numhit);
-    GetHistogram(4)->Fill(numhit * 10 + stopchancount);
+    GetHistogram(4)->Fill(numhit * 1 + stopchancount*10);
 
     if (numhit == 2)
     {
         double stopdata = 0;
         double startdata = 0;
 
-        for (i = 0; i < numhit ; i++) // loop over measurements
+        for (i = 0; i < numhit; i++) // loop over measurements
         {
             int chan = measurements[i].GetChannel();
             if (chan == stopchannel)
-                stopdata  = measurements[i].GetMeasurement() * RES_1290N;
+                stopdata = measurements[i].GetMeasurement() * RES_1290N;
             if (chan == startchannel)
                 startdata = measurements[i].GetMeasurement() * RES_1290N;
         }
@@ -149,7 +171,6 @@ void TV1290Histograms::UpdateHistograms(TDataContainer& dataContainer) {
 
     if (numhit == 3)
     {
-
 
         for (i = 0; i < numhit; i++)
         {
@@ -169,7 +190,6 @@ void TV1290Histograms::UpdateHistograms(TDataContainer& dataContainer) {
             }
         }
 
-
         int chan0 = measurements[0].GetChannel();
         // double meas0 = measurements[0].GetMeasurement() * RES_1290N;
         int chan1 = measurements[1].GetChannel();
@@ -179,12 +199,7 @@ void TV1290Histograms::UpdateHistograms(TDataContainer& dataContainer) {
 
         int tdis = 4 * chan0 + 2 * chan1 + 1 * chan2;
         GetHistogram(5)->Fill(tdis);
-
     }
-
-
-
-
 
     if (numhit > 3)
     {
@@ -199,20 +214,16 @@ void TV1290Histograms::UpdateHistograms(TDataContainer& dataContainer) {
             }
         }
     }
-
-
 }
 
-
-
 /// Take actions at begin run
-void TV1290Histograms::BeginRun(int transition, int run, int time) {
+void TV1290Histograms::BeginRun(int transition, int run, int time)
+{
 
     CreateHistograms();
-
 }
 
 /// Take actions at end run
-void TV1290Histograms::EndRun(int transition, int run, int time) {
-
+void TV1290Histograms::EndRun(int transition, int run, int time)
+{
 }

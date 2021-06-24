@@ -5,9 +5,10 @@
 
 #include "TInterestingEventManager.hxx"
 
-void TV1720Correlations::CreateHistograms() {
+void TV1720Correlations::CreateHistograms()
+{
   // check if we already have histogramss.
-/*  char tname[100];
+  /*  char tname[100];
   sprintf(tname, "V1720_Correlations_%i", 0);
 
   TH2D *tmp = (TH2D *)gDirectory->Get(tname);
@@ -17,65 +18,66 @@ void TV1720Correlations::CreateHistograms() {
   // Otherwise make histograms
   clear();
 
-//  sprintf(name, "V1720_Correlations_%i", i);
-//  sprintf(title, "V1720 Max ADC vs Max ADC time ch=%i", i);
-    
-    TH1D *a= new TH1D("QuadA", "QuadA", 1000, 00, 5000);
-    a->SetXTitle("ADC Value");
-    a->SetYTitle("Counts");
-    push_back(a);
+  //  sprintf(name, "V1720_Correlations_%i", i);
+  //  sprintf(title, "V1720 Max ADC vs Max ADC time ch=%i", i);
 
-    TH1D *b= new TH1D("QuadB", "QuadB", 1000, 00, 5000);
-    b->SetXTitle("ADC Value");
-    b->SetYTitle("Counts");
-    push_back(b);
+  TH1D *a = new TH1D("QuadA", "QuadA", 1000, 00, 5000);
+  a->SetXTitle("ADC Value");
+  a->SetYTitle("Counts");
+  push_back(a);
 
-    TH1D *c= new TH1D("QuadC", "QuadC", 1000, 00, 5000);
-    c->SetXTitle("ADC Value");
-    c->SetYTitle("Counts");
-    push_back(c);
+  TH1D *b = new TH1D("QuadB", "QuadB", 1000, 00, 5000);
+  b->SetXTitle("ADC Value");
+  b->SetYTitle("Counts");
+  push_back(b);
 
-    TH1D *d= new TH1D("QuadD", "QuadD", 1000, 00, 5000);
-    d->SetXTitle("ADC Value");
-    d->SetYTitle("Counts");
-    push_back(d);
+  TH1D *c = new TH1D("QuadC", "QuadC", 1000, 00, 5000);
+  c->SetXTitle("ADC Value");
+  c->SetYTitle("Counts");
+  push_back(c);
 
-    TH1D *sum= new TH1D("sum", "sum", 4000, 00, 12000);
-    sum->SetXTitle("ADC Value of Sum Signal");
-    sum->SetYTitle("Counts");
-    push_back(sum);
+  TH1D *d = new TH1D("QuadD", "QuadD", 1000, 00, 5000);
+  d->SetXTitle("ADC Value");
+  d->SetYTitle("Counts");
+  push_back(d);
 
-    TH2D *complete= new TH2D("complete", "complete", 100, 0,1, 100,0,1);
-    complete->SetXTitle("X Coordinate");
-    complete->SetYTitle("Y Coordinate");
-    push_back(complete);
+  TH1D *sum = new TH1D("sum", "sum", 4000, 00, 12000);
+  sum->SetXTitle("ADC Value of Sum Signal");
+  sum->SetYTitle("Counts");
+  push_back(sum);
 
-    TH2D *focused= new TH2D("focused", "focused", 200, 0.1,0.6, 200,0.4,0.6);
-    focused->SetXTitle("X Coordinate");
-    focused->SetYTitle("Y Coordinate");
-    push_back(focused);
+  TH2D *complete = new TH2D("complete", "complete", 200, 0, 1, 200, 0, 1);
+  complete->SetXTitle("X Coordinate");
+  complete->SetYTitle("Y Coordinate");
+  push_back(complete);
 
-    TH1D *sumpos = new TH1D("sum", "sum", 4000, 00, 4000);
-    sumpos->SetXTitle("ADC Value of Sum Signal");
-    sumpos->SetYTitle("Counts");
-    push_back(sumpos);
+  TH2D *focused = new TH2D("focused", "focused", 200, 0.3, 0.8, 200, 0.3, 0.8);
+  focused->SetXTitle("X Coordinate");
+  focused->SetYTitle("Y Coordinate");
+  push_back(focused);
 
-    TH1D *wave = new TH1D("singlewaveform ", "Signle WaveForm", 2000, 00, 8000);
-    wave->SetXTitle("sort of timingin");
-    wave->SetYTitle("ADC Value");
-    push_back(wave);
+  TH1D *sumpos = new TH1D("sum", "sum", 4000, 00, 4000);
+  sumpos->SetXTitle("ADC Value of Sum Signal");
+  sumpos->SetYTitle("Counts");
+  push_back(sumpos);
 
-    TH1D *base = new TH1D("baseline", "BaseLine", 2000, 00, 8000);
-    base->SetXTitle("Sort of Timingi");
-    base->SetYTitle("Counts");
-    push_back(base);
+  TH1D *wave = new TH1D("singlewaveform ", "Signle WaveForm", 2000, 00, 8000);
+  wave->SetXTitle("sort of timingin");
+  wave->SetYTitle("ADC Value");
+  push_back(wave);
 
+  TH1D *base = new TH1D("baseline", "BaseLine", 2000, 00, 8000);
+  base->SetXTitle("Sort of Timingi");
+  base->SetYTitle("Counts");
+  push_back(base);
 }
 
-void TV1720Correlations::UpdateHistograms(TDataContainer &dataContainer) {
+void TV1720Correlations::UpdateHistograms(TDataContainer &dataContainer)
+{
   TV1720RawData *v1720 = dataContainer.GetEventData<TV1720RawData>("DG01");
 
-  if (v1720 && v1720->IsZLECompressed()) {
+  if (v1720 && v1720->IsZLECompressed())
+  {
     // NOTHING
     // can't handle compressed data yet...
   }
@@ -108,118 +110,130 @@ void TV1720Correlations::UpdateHistograms(TDataContainer &dataContainer) {
   //    }
   //  }
 
-  if (v1720 && !v1720->IsZLECompressed()) {
+  if (v1720 && !v1720->IsZLECompressed())
+  {
 
     TV1720RawChannel channelDatasum = v1720->GetChannelData(4);
     double sadc, smaxadc = 0;
     int k, smaxpos = 0;
     int doubleeventflag = 0;
     int numsam = channelDatasum.GetNSamples();
-    int windowmin = 500 , windowmax = 1500;
-    for (k = 0; k < numsam ; k++) {
-        sadc = channelDatasum.GetADCSample(k);
-        if (sadc > smaxadc) {
-          smaxadc = sadc;
-          smaxpos = k; 
-        }
+    int windowmin = 500, windowmax = 1700;
+    for (k = 0; k < numsam; k++)
+    {
+      sadc = channelDatasum.GetADCSample(k);
+      if (sadc > smaxadc)
+      {
+        smaxadc = sadc;
+        smaxpos = k;
       }
+    }
     GetHistogram(4)->Fill(smaxadc);
     GetHistogram(7)->Fill(smaxpos);
-    
- //   printf("smaxpos= %d\n",smaxpos);
-    if(windowmin < smaxpos && smaxpos < windowmax)
-    {
-    double smaxfac = smaxadc/2.5;
-    double threshold = 1700;
-    for (k = windowmin; k < smaxpos-30; k++) 
-    {
-        sadc = channelDatasum.GetADCSample(k);
-        if (sadc > threshold) doubleeventflag = 1;
-    }
-    
-    for (k = smaxpos+30; k < windowmax; k++) 
-    {
-        sadc = channelDatasum.GetADCSample(k);
-        if (sadc > threshold) doubleeventflag = 1;
-    }
 
-//    printf("doubleeventflag= %d\n",doubleeventflag);
-    if (doubleeventflag == 0)
+    //   printf("smaxpos= %d\n",smaxpos);
+    if (windowmin < smaxpos && smaxpos < windowmax)
     {
-
-    double maxch[4];
-    for (int i = 0; i < 4; i++) {  // loop over channels
-
-      TV1720RawChannel channelData = v1720->GetChannelData(i);
-      if (channelData.GetNSamples() <= 0) continue;
-
-   //   double minadc = 4000;
-      double maxadc = 0;
-      int maxadcpos = 0;
-      // Find Max
-      for (int j = smaxpos; j < smaxpos + 500; j++) {
-        double adc = channelData.GetADCSample(j);
-        if (adc > maxadc) {
-          maxadc = adc;
-          maxadcpos = j;
-        }
-      }
-      // Find BAseline
-      double base = 0;
-      if(smaxpos < 4000)
+      double smaxfac = smaxadc / 2.5;
+      double threshold = 1700;
+      for (k = windowmin; k < smaxpos - 30; k++)
       {
-        for (int j = maxadcpos+450; j < numsam ; j++)
-        {
-            base = base+channelData.GetADCSample(j);
-        }
-       base=base/(numsam-maxadcpos-450);
-       maxch[i] = maxadc-base;
+        sadc = channelDatasum.GetADCSample(k);
+        if (sadc > threshold)
+          doubleeventflag = 1;
       }
 
-      if(smaxpos >= 4000)
+      for (k = smaxpos + 30; k < windowmax; k++)
       {
-        for (int j = 0; j < maxadcpos-250; j++)
-        {
-            base = base+channelData.GetADCSample(j);
-        }
-       base=base/(maxadcpos-250);
-       maxch[i] = maxadc-base;
+        sadc = channelDatasum.GetADCSample(k);
+        if (sadc > threshold)
+          doubleeventflag = 1;
       }
 
+      //    printf("doubleeventflag= %d\n",doubleeventflag);
+      if (doubleeventflag == 0)
+      {
 
+        double maxch[4];
+        for (int i = 0; i < 4; i++)
+        { // loop over channels
 
-      // As test, set any event where time for max bin < 200 as 'interesting'
-      // if (max_adc_time < 400) iem_t::instance()->SetInteresting();
-    GetHistogram(i)->Fill(maxch[i]);
-    if(i == 0)
-    {
-        for(int j = 0 ; j< numsam; j++)
-        {
-            GetHistogram(8)->SetBinContent(j,channelData.GetADCSample(j));
-            GetHistogram(9)->SetBinContent(j,base);
+          TV1720RawChannel channelData = v1720->GetChannelData(i);
+          if (channelData.GetNSamples() <= 0)
+            continue;
+
+          //   double minadc = 4000;
+          double maxadc = 0;
+          int maxadcpos = 0;
+          // Find Max
+          for (int j = smaxpos-100; j < smaxpos + 500; j++)
+          {
+            double adc = channelData.GetADCSample(j);
+            if (adc > maxadc)
+            {
+              maxadc = adc;
+              maxadcpos = j;
+            }
+          }
+          // std::cout << "maxadcfound:" << maxadc << std::endl;
+          // Find BAseline
+          double base = 0;
+          if (smaxpos < 1000)
+          {
+            for (int j = maxadcpos + 450; j < numsam; j++)
+            {
+              base = base + channelData.GetADCSample(j);
+            }
+            base = base / (numsam - maxadcpos - 450);
+            // std::cout << "maxadcusedl10:" << maxadc << std::endl;
+            // std::cout << "basefound:" << base << std::endl;
+            maxch[i] = maxadc - base;
+            //  printf("maxch= %d\n",maxch[1]);
+          }
+
+          if (smaxpos >= 1000)
+          {
+            for (int j = 0; j < maxadcpos - 250; j++)
+            {
+              base = base + channelData.GetADCSample(j);
+            }
+            base = base / (maxadcpos - 250);
+            // std::cout << "maxadcusedm10:" << maxadc << std::endl;
+            // std::cout << "basefound:" << base << std::endl;
+            maxch[i] = maxadc - base;
+          }
+
+          // As test, set any event where time for max bin < 200 as 'interesting'
+          // if (max_adc_time < 400) iem_t::instance()->SetInteresting();
+          GetHistogram(i)->Fill(maxch[i]);
+          if (i == 0)
+          {
+            for (int j = 0; j < numsam; j++)
+            {
+              GetHistogram(8)->SetBinContent(j, channelData.GetADCSample(j));
+              GetHistogram(9)->SetBinContent(j, base);
+            }
+          }
         }
-    }
 
+        // double sum = minch[0]+minch[1]+minch[2]+minch[3];
+        double sum = maxch[0] + maxch[1] + maxch[2] + maxch[3];
+        double chx = (maxch[0] + maxch[1]) / sum;
+        //    double chx = 0;
+        double chy = (maxch[1] + maxch[2]) / sum;
+        //    double chy = 0;
 
-
-    }
-
-    // double sum = minch[0]+minch[1]+minch[2]+minch[3];
-    double sum = maxch[0]+maxch[1]+maxch[2]+maxch[3];
-    double chx = (maxch[0]+maxch[1])/sum;    
-//    double chx = 0;
-    double chy = (maxch[1]+maxch[2])/sum;    
-//    double chy = 0;
-    
-    GetHistogram(5)->Fill(chx,chy);
-    GetHistogram(6)->Fill(chx,chy);
-  }
+        GetHistogram(5)->Fill(chx, chy);
+        GetHistogram(6)->Fill(chx, chy);
+      }
     }
   }
 }
 
-void TV1720Correlations::Reset() {
-  for (int i = 0; i < 8; i++) {  // loop over channels
+void TV1720Correlations::Reset()
+{
+  for (int i = 0; i < 8; i++)
+  { // loop over channels
     GetHistogram(i)->Reset();
   }
 }
