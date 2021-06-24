@@ -26,7 +26,9 @@ void TV1290Histograms::CreateHistograms() {
     alltdiff->SetYTitle("Counts");
     push_back(alltdiff);
 
-    TH1D *shits = new TH1D("singleHit", "singleHit", 10000, 0, 5000);
+    // TH1D *shits = new TH1D("singleHit", "singleHit", 10000, 0, 5000);
+    TH1D *shits = new TH1D("singleHit", "singleHit", 5000, 0, 5000);
+    TAxis *saxis = shits->GetXaxis();
     shits->SetXTitle("Time in ns");
     shits->SetYTitle("Counts");
     push_back(shits);
